@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Canteen.iml" filepath="$PROJECT_DIR$/Canteen.iml" />
-      <module fileurl="file://$PROJECT_DIR$/canteen-backend/canteen-backend.iml" filepath="$PROJECT_DIR$/canteen-backend/canteen-backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/canteen-frontend/canteen-frontend.iml" filepath="$PROJECT_DIR$/canteen-frontend/canteen-frontend.iml" />
     </modules>
   </component>
