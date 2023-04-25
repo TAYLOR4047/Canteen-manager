@@ -92,13 +92,23 @@
                 <div style="margin: 10px 0">
                     <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline"></i>
                     </el-button>
-                    <el-button type="danger">批量删除 <i class="el-icon-remove-outline"></i></el-button>
+                    <el-popconfirm
+                        class="ml-5"
+                        confirm-button-text='确定'
+                        cancel-button-text='我再想想'
+                        icon="el-icon-info"
+                        icon-color="red"
+                        title="您确定批量删除吗？"
+                        @confirm="delBatch">
+                        <el-button type="danger" slot="reference">批量删除 <i class="el-icon-remove-outline"></i></el-button>
+                    </el-popconfirm>
                     <el-button type="primary">导入 <i class="el-icon-bottom"></i></el-button>
                     <el-button type="primary">导出 <i class="el-icon-top"></i></el-button>
                 </div>
 
                 <!--        表格内部操作部分        -->
-                <el-table :data="tableData" border stripe :header-cell-class-name="headerBg">
+                <el-table :data="tableData" border stripe :header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
+                    <el-table-column type="selection" width="55"></el-table-column>
                     <el-table-column prop="id" label="ID" width="80"></el-table-column>
                     <el-table-column prop="username" label="用户名" width="140"></el-table-column>
                     <el-table-column prop="nickname" label="昵称" width="120"></el-table-column>
@@ -186,6 +196,7 @@ export default {
             address: "",
             form: {},
             dialogFormVisible: false,
+            multipleSelection:[],
             msg: "IronmanJay",
             collapseBtnClass: 'el-icon-s-fold',
             isCollapse: false, //默认侧边栏打开
@@ -246,6 +257,10 @@ export default {
             this.form = row
             this.dialogFormVisible = true
         },
+        handleSelectionChange(val){
+            console.log(val)
+            this.multipleOfPrecision=val
+        },
         del(id){
             this.request.delete("/user/"+id).then(res => {
                 if(res){
@@ -255,6 +270,17 @@ export default {
                     this.$message.error("删除失败！")
                 }
             })
+        },
+        delBatch(){
+          let ids=this.multipleOfPrecision.map(v=>v.id)
+          this.request.post("/user/del/batch",ids).then(res=>{
+              if(res){
+                  this.$message.success("批量删除成功！")
+                  this.load()
+              }else{
+                  this.$message.error("批量删除失败！")
+              }
+          })
         },
         save() {
             this.request.post("/user", this.form).then(res => {

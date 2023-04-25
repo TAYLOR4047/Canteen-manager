@@ -31,7 +31,7 @@ public class UserController {
     }*/
 
     @PostMapping
-    private boolean save(@RequestBody User user){
+    private boolean save(@RequestBody User user) {
         return userService.saveService(user);
     }
 
@@ -72,13 +72,19 @@ public class UserController {
 
 
     @GetMapping
-    public List<User> findAll(){
+    public List<User> findAll() {
         return userService.list();
     }
 
 
     @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Integer id){
+    public boolean delete(@PathVariable Integer id) {
         return userService.removeById(id);
     }
+
+    @PostMapping("/del/batch")
+    public boolean deleteBatch(@RequestBody List<Integer> ids) {
+        return userService.removeByIds(ids);
+    }
+
 }
