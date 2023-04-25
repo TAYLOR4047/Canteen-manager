@@ -78,12 +78,12 @@
 
                 <!--        搜索部分        -->
                 <div style="margin: 10px 0">
-                    <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search"></el-input>
+                    <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="username"></el-input>
                     <el-input style="width: 200px" placeholder="请输入邮箱" suffix-icon="el-icon-message"
                               class="ml-5"></el-input>
                     <el-input style="width: 200px" placeholder="请输入地址" suffix-icon="el-icon-position"
                               class="ml-5"></el-input>
-                    <el-button class="ml-5" type="primary">搜索</el-button>
+                    <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
                 </div>
 
                 <!--      表格外部操作部分          -->
@@ -144,6 +144,7 @@ export default {
             total: 0,
             pageNum: 1,
             pageSize: 2,
+            username: "",
             msg: "IronmanJay",
             collapseBtnClass: 'el-icon-s-fold',
             isCollapse: false, //默认侧边栏打开
@@ -166,7 +167,7 @@ export default {
             }
         },
         load() {
-            fetch("http://localhost:9090/user/page?pageNum=" + this.pageNum + "&pageSize=" + this.pageSize).then(res => res.json()).then(res => {
+            fetch("http://localhost:9090/user/page?pageNum=" + this.pageNum + "&pageSize=" + this.pageSize+"&username="+this.username).then(res => res.json()).then(res => {
                 console.log(res)
                 this.tableData = res.data
                 this.total = res.total
