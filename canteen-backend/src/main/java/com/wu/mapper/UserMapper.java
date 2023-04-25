@@ -9,11 +9,12 @@ import java.util.List;
 @Mapper
 public interface UserMapper{
     //查询所有数据
-    @Select("select * from user limit #{pageNum},#{pageSize}")
-    List<User> selectPage(Integer pageNum, Integer pageSize);
+    @Select("select * from user where username like concat('%',#{username},'%') limit #{pageNum},#{pageSize}")
+    List<User> selectPage(Integer pageNum, Integer pageSize,String username);
 
-    @Select("select count(*) from user")
-    Integer selectTotal();
+
+    @Select("select count(*) from user where username like concat('%',#{username},'%')")
+    Integer selectTotal(String username);
 
     @Select("select * from user")
     List<User> findAll();
