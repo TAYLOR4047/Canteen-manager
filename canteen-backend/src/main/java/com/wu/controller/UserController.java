@@ -49,9 +49,14 @@ public class UserController {
         return res;
     }
 
+    @GetMapping
+    public List<User> findAll(){
+        return userService.list();
+    }
+
 
     @DeleteMapping("/{id}")
-    public Integer delete(@PathVariable Integer id){
-        return userMapper.deleteById(id);
+    public boolean delete(@PathVariable Integer id){
+        return userService.removeById(id);
     }
 }
