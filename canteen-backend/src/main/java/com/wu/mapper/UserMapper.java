@@ -9,6 +9,12 @@ import java.util.List;
 @Mapper
 public interface UserMapper{
     //查询所有数据
+    @Select("select * from user limit #{pageNum},#{pageSize}")
+    List<User> selectPage(Integer pageNum, Integer pageSize);
+
+    @Select("select count(*) from user")
+    Integer selectTotal();
+
     @Select("select * from user")
     List<User> findAll();
 
