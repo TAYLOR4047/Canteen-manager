@@ -22,9 +22,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping
+  /*  @PostMapping
     private Integer save(@RequestBody User user){
         return userService.save(user);
+    }*/
+
+    @PostMapping
+    private boolean save(@RequestBody User user){
+        return userService.saveService(user);
     }
 
     @GetMapping
