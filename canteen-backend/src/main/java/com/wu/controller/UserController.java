@@ -1,5 +1,8 @@
 package com.wu.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wu.entity.User;
 import com.wu.mapper.UserMapper;
 
@@ -32,22 +35,41 @@ public class UserController {
         return userService.saveService(user);
     }
 
-    @GetMapping
+/*    @GetMapping
     public List<User> index(){
         List<User> all=userMapper.findAll();
         return all;
+    }*/
+
+    /**
+     * 分页查询接口
+     * 接口路径：/user/page
+     *
+     * @param pageNum  = (pageNum - 1) * pageSize
+     * @param pageSize = pageSize
+     * @param username 用户名
+     * @param email    邮箱
+     * @param address  地址
+     * @return 返回分页用户信息
+     * @RequestParam 接收?pageNum=1&pageSize=10
+     */
+    @GetMapping("page")
+    public IPage<User> findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String username, @RequestParam(defaultValue = "") String email, @RequestParam(defaultValue = "") String address) {
+        IPage<User> page = new Page<>(pageNum, pageSize);
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        if (!"".equals(username)) {
+            queryWrapper.like("username", username);
+        }
+        if (!"".equals(email)) {
+            queryWrapper.like("email", email);
+        }
+        if (!"".equals(address)) {
+            queryWrapper.like("address", address);
+        }
+        queryWrapper.orderByDesc("id");
+        return userService.page(page, queryWrapper);
     }
 
-    @GetMapping("page")
-    public Map<String, Object> findPage(@RequestParam Integer pageNum,@RequestParam Integer pageSize,@RequestParam String username){
-        pageNum=(pageNum-1)*pageSize;
-        List<User> data=userMapper.selectPage(pageNum,pageSize,username);
-        Integer total= userMapper.selectTotal(username);
-        Map<String,Object> res=new HashMap<>();
-        res.put("data",data);
-        res.put("total",total);
-        return res;
-    }
 
     @GetMapping
     public List<User> findAll(){
