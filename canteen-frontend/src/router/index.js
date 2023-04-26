@@ -15,7 +15,9 @@ const routes = [
             //  用户管理
             {path: 'user', name: '用户管理', component: () => import('../views/User.vue')},
             //  用户信息界面
-            {path: 'person', name: '个人信息', component: () => import('../views/Person.vue')}
+            {path: 'person', name: '个人信息', component: () => import('../views/Person.vue')},
+            // 文件管理界面
+            {path: 'file', name: '文件管理', component: () => import('../views/File.vue')}
         ]
     },
     //  关于页面
