@@ -1,45 +1,59 @@
 package com.wu.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.wu.entity.User;
-import com.wu.mapper.UserMapper;
 
-import com.wu.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import com.wu.service.IUserService;
+import com.wu.entity.User;
+
+import org.springframework.web.bind.annotation.RestController;
+
+/**
+ * <p>
+ * 前端控制器
+ * </p>
+ *
+ * @author NaHCO3
+ * @since 2023-04-26
+ */
 @RestController
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserMapper userMapper;
+    @Resource
+    private IUserService userService;
 
-    @Autowired
-    private UserService userService;
-
-  /*  @PostMapping
-    private Integer save(@RequestBody User user){
-        return userService.save(user);
-    }*/
-
+    // 新增或者更新
     @PostMapping
-    private boolean save(@RequestBody User user) {
-        return userService.saveService(user);
+    public boolean save(@RequestBody User user) {
+        return userService.saveOrUpdate(user);
     }
 
-/*    @GetMapping
-    public List<User> index(){
-        List<User> all=userMapper.findAll();
-        return all;
-    }*/
+    @DeleteMapping("/{id}")
+    public Boolean delete(@PathVariable Integer id) {
+        return userService.removeById(id);
+    }
+
+    @PostMapping("/del/batch")
+    public boolean deleteBatch(@RequestBody List<Integer> ids) {
+        return userService.removeByIds(ids);
+    }
+
+    @GetMapping
+    public List<User> findAll() {
+        return userService.list();
+    }
+
+    @GetMapping("/{id}")
+    public User findOne(@PathVariable Integer id) {
+        return userService.getById(id);
+    }
 
     /**
      * 分页查询接口
@@ -53,9 +67,8 @@ public class UserController {
      * @return 返回分页用户信息
      * @RequestParam 接收?pageNum=1&pageSize=10
      */
-    @GetMapping("page")
-    public IPage<User> findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String username, @RequestParam(defaultValue = "") String email, @RequestParam(defaultValue = "") String address) {
-        IPage<User> page = new Page<>(pageNum, pageSize);
+    @GetMapping("/page")
+    public Page<User> findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize, @RequestParam(defaultValue = "") String username, @RequestParam(defaultValue = "") String email, @RequestParam(defaultValue = "") String address) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         if (!"".equals(username)) {
             queryWrapper.like("username", username);
@@ -67,24 +80,9 @@ public class UserController {
             queryWrapper.like("address", address);
         }
         queryWrapper.orderByDesc("id");
-        return userService.page(page, queryWrapper);
+        return userService.page(new Page<>(pageNum, pageSize), queryWrapper);
     }
 
-
-    @GetMapping
-    public List<User> findAll() {
-        return userService.list();
-    }
-
-
-    @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Integer id) {
-        return userService.removeById(id);
-    }
-
-    @PostMapping("/del/batch")
-    public boolean deleteBatch(@RequestBody List<Integer> ids) {
-        return userService.removeByIds(ids);
-    }
 
 }
+

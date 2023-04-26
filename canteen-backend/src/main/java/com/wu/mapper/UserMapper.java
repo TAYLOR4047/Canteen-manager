@@ -1,19 +1,23 @@
 package com.wu.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wu.entity.User;
-import org.apache.ibatis.annotations.*;
-
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
+/**
+ * <p>
+ *  Mapper 接口
+ * </p>
+ *
+ * @author NaHCO3
+ * @since 2023-04-26
+ */
 public interface UserMapper extends BaseMapper<User> {
-    //查询所有数据
-   /* @Select("select * from user where username like concat('%',#{username},'%') limit #{pageNum},#{pageSize}")
-    List<User> selectPage(Integer pageNum, Integer pageSize,String username);
-*/
-
-
     @Select("select count(*) from user where username like concat('%',#{username},'%')")
     Integer selectTotal(String username);
 
