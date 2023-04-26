@@ -10,7 +10,7 @@ import com.wu.exception.ServiceException;
 import com.wu.mapper.UserMapper;
 import com.wu.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.wu.utils.ToeknUtils;
+import com.wu.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -30,7 +30,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         User one=getUserInfo(userDTO);
         if(one!=null){
             BeanUtil.copyProperties(one,userDTO,true);
-            String toekn= ToeknUtils.getToken(one.getId().toString(),one.getPassword());
+            String toekn= TokenUtils.genToken(one.getId().toString(),one.getPassword());
             userDTO.setToken(toekn);
             return userDTO;
         }else{
