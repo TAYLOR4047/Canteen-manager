@@ -7,6 +7,6 @@ public class UserDTO {
     private String username;
     private String password;
     private String nickname;
-    private String avater;
+    private String avatar;
     private String token;
 }
