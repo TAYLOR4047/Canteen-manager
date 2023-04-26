@@ -27,8 +27,15 @@
             >
                 <el-button type="danger" slot="reference">批量删除 <i class="el-icon-remove-outline"></i></el-button>
             </el-popconfirm>
-            <el-button type="primary" class="ml-5">导入 <i class="el-icon-bottom"></i></el-button>
-            <el-button type="primary">导出 <i class="el-icon-top"></i></el-button>
+            <el-upload
+                    action="http://localhost:9090/user/import"
+                    :show-file-list="false"
+                    accept="xlsx"
+                    :on-success="handleExcelImportSuccess"
+                    style="display: inline-block">
+                <el-button type="primary" @click="" class="ml-5">导入 <i class="el-icon-bottom"></i></el-button>
+            </el-upload>
+            <el-button type="primary" @click="exp">导出 <i class="el-icon-top"></i></el-button>
         </div>
 
         <!--        表格内部操作部分        -->
@@ -43,7 +50,8 @@
             <el-table-column prop="address" label="地址"></el-table-column>
             <el-table-column label="操作" width="200" align="center">
                 <template slot-scope="scope">
-                    <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
+                    <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i>
+                    </el-button>
                     <el-popconfirm
                             class="ml-5"
                             confirm-button-text='确定'
@@ -53,7 +61,8 @@
                             title="您确定删除吗？"
                             @confirm="del(scope.row.id)"
                     >
-                        <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i></el-button>
+                        <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i>
+                        </el-button>
                     </el-popconfirm>
                 </template>
             </el-table-column>
@@ -107,7 +116,7 @@ export default {
             tableData: [],
             total: 0,
             pageNum: 1,
-            pageSize: 5,
+            pageSize: 10,
             username: "",
             email: "",
             address: "",
@@ -199,6 +208,13 @@ export default {
             console.log(pageNum)
             this.pageNum = pageNum
             this.load()
+        },
+        handleExcelImportSuccess() {
+            this.$message.success("文件成功导入！")
+            this.load()
+        },
+        exp() {
+            window.open("http://localhost:9090/user/export")
         }
     }
 }
