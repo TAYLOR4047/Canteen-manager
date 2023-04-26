@@ -1,5 +1,6 @@
 package com.wu.service;
 
+import com.wu.controller.dto.UserDTO;
 import com.wu.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -13,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IUserService extends IService<User> {
 
+    UserDTO login(UserDTO userDTO);
 }

@@ -2,10 +2,14 @@ package com.wu.controller;
 
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wu.common.Constants;
+import com.wu.common.Result;
+import com.wu.controller.dto.UserDTO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -126,13 +130,13 @@ public class UserController {
     }
 
     @PostMapping("/import")
-    public Boolean imp(MultipartFile file)throws Exception{
-        InputStream inputStream= file.getInputStream();
-        ExcelReader reader=ExcelUtil.getReader(inputStream);
-        List<List<Object>> list=reader.read(1);
-        List<User> users= CollUtil.newArrayList();
-        for(List<Object> row:list){
-            User user=new User();
+    public Boolean imp(MultipartFile file) throws Exception {
+        InputStream inputStream = file.getInputStream();
+        ExcelReader reader = ExcelUtil.getReader(inputStream);
+        List<List<Object>> list = reader.read(1);
+        List<User> users = CollUtil.newArrayList();
+        for (List<Object> row : list) {
+            User user = new User();
             user.setUsername(row.get(0).toString());
             user.setPassword(row.get(1).toString());
             user.setNickname(row.get(2).toString());
@@ -145,6 +149,22 @@ public class UserController {
         return true;
     }
 
+    /**
+     * 用户登录接口
+     *
+     * @param userDTO 登录的用户信息
+     * @return 返回登录结果
+     */
+    @PostMapping("/login")
+    public Result login(@RequestBody UserDTO userDTO) {
+        String username = userDTO.getUsername();
+        String password = userDTO.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)){
+            return Result.error(Constants.CODE_400, "参数错误");
+        }
+        UserDTO dto = userService.login(userDTO);
+        return Result.success(dto);
+    }
 
 
 }
