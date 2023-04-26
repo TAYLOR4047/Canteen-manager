@@ -176,6 +176,13 @@ public class UserController {
         return Result.success(userService.register(userDTO));
     }
 
+    @GetMapping("/username/{username}")
+    public Result findOne(@PathVariable String username){
+        QueryWrapper<User> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        return Result.success(userService.getOne(queryWrapper));
+    }
+
 
 }
 
