@@ -8,4 +8,5 @@ public class UserDTO {
     private String password;
     private String nickname;
     private String avater;
+    private String token;
 }
