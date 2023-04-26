@@ -10,7 +10,6 @@ import com.wu.exception.ServiceException;
 import com.wu.mapper.UserMapper;
 import com.wu.service.IUserService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -36,19 +35,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
     }
 
-/*    @Override
-    public boolean login(UserDTO userDTO) {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", userDTO.getUsername());
-        queryWrapper.eq("password", userDTO.getPassword());
-        try {
-            User one=getOne(queryWrapper);
-            return one!=null;
-        } catch (Exception e) {
-            LOG.error(e);
-            return false;
+    @Override
+    public User register(UserDTO userDTO){
+        User one=getUserInfo(userDTO);
+        if(one==null){
+            one=new User();
+            BeanUtil.copyProperties(userDTO,one,true);
+            save(one);
+        }else{
+            throw new ServiceException(Constants.CODE_600,"用户已存在");
         }
-    }*/
+        return null;
+    }
 
     private User getUserInfo(UserDTO userDTO) {
         QueryWrapper<User> queryWrapper=new QueryWrapper<>();
