@@ -86,8 +86,8 @@
                 show-checkbox
                 node-key="id"
                 ref="tree"
-                :default-expanded-keys="[1]"
-                :default-checked-keys="[4]">
+                :default-expanded-keys="expands"
+                :default-checked-keys="checks">
                 <span class="custom-tree-node" slot-scope="{ node, data }">
                     <span><i :class="data.icon"></i> {{ data.name }}</span>
                 </span>
@@ -119,6 +119,8 @@ export default {
             props:{
                 label: 'name',
             },
+            expands: [],
+            checks:[],
         }
     },
     // 请求分页查询数据
@@ -214,6 +216,8 @@ export default {
             }).then(res => {
                 console.log(res);
                 this.menuData = res.data;
+                //将后台返回的菜单数据处理成id数组
+                this.expands=this.menuData.map(v=>v.id)
             })
         },
     }

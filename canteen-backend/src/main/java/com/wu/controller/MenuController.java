@@ -2,7 +2,10 @@ package com.wu.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wu.common.Constants;
 import com.wu.common.Result;
+import com.wu.entity.Dict;
+import com.wu.mapper.DictMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -29,6 +32,9 @@ public class MenuController {
 
     @Resource
     private IMenuService menuService;
+
+    @Resource
+    private DictMapper dictMapper;
 
     // 新增或者更新
     @PostMapping
@@ -57,11 +63,12 @@ public class MenuController {
         return Result.success(menuService.findMenus(name));
     }
 
-
-/*    @GetMapping
-    public List<Menu> findAll() {
-        return menuService.list();
-    }*/
+    @GetMapping("/icons")
+    public Result getIcons() {
+        QueryWrapper<Dict> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("type", Constants.DICT_TYPE_ICON);
+        return Result.success(dictMapper.selectList(null));
+    }
 
     @GetMapping("/{id}")
     public Menu findOne(@PathVariable Integer id) {
