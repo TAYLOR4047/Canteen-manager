@@ -3,7 +3,7 @@
 <mapper namespace="com.wu.mapper.UserMapper">
 
     <update id="updatePassword">
-        update user set `password` = #{userPasswordDTO.newPassword} where `username` = #{userPasswordDTO.username};
+        update sys_user set `password` = #{userPasswordDTO.newPassword} where `username` = #{userPasswordDTO.username};
     </update>
 
     <resultMap id="pageUser" type="com.wu.entity.User">
@@ -19,16 +19,16 @@
     </resultMap>
 
     <select id="findPage" resultMap="pageUser">
-        select user.*, sc.name as stuCourseName, tc.name as teacherCourseName, tc.score as teacherScore, sc.score as stuScore from user
+        select sys_user.*, sc.name as stuCourseName, tc.name as teacherCourseName, tc.score as teacherScore, sc.score as stuScore from sys_user
         left join student_course
-        on user.id = student_course.student_id
+        on sys_user.id = student_course.student_id
         left join course sc
         on student_course.course_id = sc.id
         left join course tc
-        on user.id = tc.teacher_id
+        on sys_user.id = tc.teacher_id
         <where>
             <if test="username != null and username != ''">
-                and user.username like concat('%',#{username},'%')
+                and sys_user.username like concat('%',#{username},'%')
             </if>
             <if test="email != null and email != ''">
                 and sys_user.email like concat('%',#{email},'%')

@@ -24,7 +24,7 @@ import lombok.ToString;
  */
 @Getter
 @Setter
-@TableName("user")
+@TableName("sys_user")
 @ApiModel(value = "User对象", description = "")
 @ToString
 public class User implements Serializable {
