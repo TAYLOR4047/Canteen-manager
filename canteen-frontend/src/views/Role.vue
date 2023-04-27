@@ -1,5 +1,5 @@
 <template>
-  <!--     页面主体       -->
+    <!--     页面主体       -->
     <div>
         <!--        搜索部分        -->
         <div style="margin: 10px 0">
@@ -13,13 +13,13 @@
         <div style="margin: 10px 0">
             <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
             <el-popconfirm
-                    class="ml-5"
-                    confirm-button-text='确定'
-                    cancel-button-text='我再想想'
-                    icon="el-icon-info"
-                    icon-color="red"
-                    title="您确定批量删除这些数据吗？"
-                    @confirm="delBatch"
+                class="ml-5"
+                confirm-button-text='确定'
+                cancel-button-text='我再想想'
+                icon="el-icon-info"
+                icon-color="red"
+                title="您确定批量删除这些数据吗？"
+                @confirm="delBatch"
             >
                 <el-button type="danger" slot="reference">批量删除 <i class="el-icon-remove-outline"></i></el-button>
             </el-popconfirm>
@@ -34,16 +34,17 @@
             <el-table-column prop="description" label="描述"></el-table-column>
             <el-table-column label="操作" width="280" align="center">
                 <template slot-scope="scope">
-                    <el-button type="info" @click="selectMenu(scope.row.id)">分配菜单 <i class="el-icon-menu"></i></el-button>
+                    <el-button type="info" @click="selectMenu(scope.row.id)">分配菜单 <i class="el-icon-menu"></i>
+                    </el-button>
                     <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
                     <el-popconfirm
-                            class="ml-5"
-                            confirm-button-text='确定'
-                            cancel-button-text='我再想想'
-                            icon="el-icon-info"
-                            icon-color="red"
-                            title="您确定删除吗？"
-                            @confirm="del(scope.row.id)"
+                        class="ml-5"
+                        confirm-button-text='确定'
+                        cancel-button-text='我再想想'
+                        icon="el-icon-info"
+                        icon-color="red"
+                        title="您确定删除吗？"
+                        @confirm="del(scope.row.id)"
                     >
                         <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i></el-button>
                     </el-popconfirm>
@@ -54,13 +55,13 @@
         <!--       翻页与页码部分         -->
         <div style="padding: 10px 0">
             <el-pagination
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :current-page="pageNum"
-                    :page-sizes="[2, 5, 10, 20]"
-                    :page-size="pageSize"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="total">
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageNum"
+                :page-sizes="[2, 5, 10, 20]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
             </el-pagination>
         </div>
 
@@ -86,7 +87,7 @@
                 show-checkbox
                 node-key="id"
                 ref="tree"
-                :default-expanded-keys="expands"
+                :default-expanded-keys="expends"
                 :default-checked-keys="checks">
                 <span class="custom-tree-node" slot-scope="{ node, data }">
                     <span><i :class="data.icon"></i> {{ data.name }}</span>
@@ -94,7 +95,7 @@
             </el-tree>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="save">确 定</el-button>
+                <el-button type="primary" @click="saveRoleMenu">确 定</el-button>
             </div>
         </el-dialog>
     </div>
@@ -113,14 +114,15 @@ export default {
             name: "",
             form: {},
             dialogFormVisible: false,
-            menuDialogVis:false,
+            menuDialogVis: false,
             multipleSelection: [],
             menuData: [],
-            props:{
+            props: {
                 label: 'name',
             },
-            expands: [],
-            checks:[],
+            expends: [],
+            checks: [],
+            roleId: 0
         }
     },
     // 请求分页查询数据
@@ -141,7 +143,7 @@ export default {
                 this.tableData = res.records
                 this.total = res.total
 
-            })
+            });
         },
         save() {
             this.request.post("/role", this.form).then(res => {
@@ -151,6 +153,16 @@ export default {
                     this.load()
                 } else {
                     this.$message.error("保存失败")
+                }
+            })
+        },
+        saveRoleMenu() {
+            this.request.post("/role/roleMenu/" + this.roleId, this.$refs.tree.getCheckedKeys()).then(res => {
+                if (res.code === '200') {
+                    this.$message.success("绑定成功")
+                    this.menuDialogVis = false
+                } else {
+                    this.$message.error(res.msg)
                 }
             })
         },
@@ -202,22 +214,18 @@ export default {
             this.pageNum = pageNum
             this.load()
         },
-        exp() {
-            window.open("http://localhost:9090/role/export")
-        },
-        handleExcelImportSuccess(){
-            this.$message.success("文件导入成功!")
-            this.load()
-        },
         selectMenu(roleId) {
             this.menuDialogVis = true;
+            this.roleId = roleId;
             // 请求菜单数据
-            this.request.get("/menu", {
-            }).then(res => {
+            this.request.get("/menu", {}).then(res => {
                 console.log(res);
                 this.menuData = res.data;
-                //将后台返回的菜单数据处理成id数组
-                this.expands=this.menuData.map(v=>v.id)
+                // 把后台返回的菜单数据处理成id数组
+                this.expends = this.menuData.map(v => v.id)
+            })
+            this.request.get("/role/roleMenu/" + this.roleId).then(res => {
+                this.checks = res.data;
             })
         },
     }

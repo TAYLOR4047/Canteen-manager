@@ -2,6 +2,7 @@ package com.wu.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wu.common.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -61,6 +62,24 @@ public class RoleController {
         queryWrapper.like("name", name);
         queryWrapper.orderByDesc("id");
         return roleService.page(new Page<>(pageNum, pageSize), queryWrapper);
+    }
+
+    /**
+     * 绑定角色和菜单的关系
+     *
+     * @param roleId  角色id
+     * @param menuIds 菜单id数组
+     * @return 绑定结果
+     */
+    @PostMapping("/roleMenu/{roleId}")
+    public Result roleMenu(@PathVariable Integer roleId, @RequestBody List<Integer> menuIds) {
+        roleService.setRoleMenu(roleId, menuIds);
+        return Result.success();
+    }
+
+    @GetMapping("/roleMenu/{roleId}")
+    public Result getRoleMenu(@PathVariable Integer roleId) {
+        return Result.success(roleService.getRoleMenu(roleId));
     }
 
 }
