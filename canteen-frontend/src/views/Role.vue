@@ -78,6 +78,25 @@
                 <el-button type="primary" @click="save">确 定</el-button>
             </div>
         </el-dialog>
+
+        <el-dialog title="菜单分配" :visible.sync="menuDialogVis" width="30%">
+            <el-tree
+                :props="props"
+                :data="menuData"
+                show-checkbox
+                node-key="id"
+                ref="tree"
+                :default-expanded-keys="[1]"
+                :default-checked-keys="[4]">
+                <span class="custom-tree-node" slot-scope="{ node, data }">
+                    <span><i :class="data.icon"></i> {{ data.name }}</span>
+                </span>
+            </el-tree>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="save">确 定</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -94,7 +113,12 @@ export default {
             name: "",
             form: {},
             dialogFormVisible: false,
-            multipleSelection: []
+            menuDialogVis:false,
+            multipleSelection: [],
+            menuData: [],
+            props:{
+                label: 'name',
+            },
         }
     },
     // 请求分页查询数据
@@ -182,7 +206,16 @@ export default {
         handleExcelImportSuccess(){
             this.$message.success("文件导入成功!")
             this.load()
-        }
+        },
+        selectMenu(roleId) {
+            this.menuDialogVis = true;
+            // 请求菜单数据
+            this.request.get("/menu", {
+            }).then(res => {
+                console.log(res);
+                this.menuData = res.data;
+            })
+        },
     }
 }
 </script>
