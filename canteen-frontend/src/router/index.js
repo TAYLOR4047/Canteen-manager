@@ -18,6 +18,8 @@ const routes = [
             {path: 'role', name: '角色信息', component: () => import('../views/Role.vue')},
             //  用户信息界面
             {path: 'person', name: '个人信息', component: () => import('../views/Person.vue')},
+            //  菜单管理界面
+            {path: 'menu', name: '菜单管理', component: () => import('../views/Menu.vue')},
             // 文件管理界面
             {path: 'file', name: '文件管理', component: () => import('../views/File.vue')}
         ]
