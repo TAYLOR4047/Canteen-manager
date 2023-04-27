@@ -31,10 +31,11 @@
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="id" label="ID" width="80"></el-table-column>
             <el-table-column prop="name" label="名称"></el-table-column>
+            <el-table-column prop="flag" label="唯一标识"></el-table-column>
             <el-table-column prop="description" label="描述"></el-table-column>
             <el-table-column label="操作" width="280" align="center">
                 <template slot-scope="scope">
-                    <el-button type="info" @click="selectMenu(scope.row.id)">分配菜单 <i class="el-icon-menu"></i>
+                    <el-button type="info" @click="selectMenu(scope.row)">分配菜单 <i class="el-icon-menu"></i>
                     </el-button>
                     <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
                     <el-popconfirm
@@ -69,6 +70,9 @@
             <el-form label-width="80px" size="small">
                 <el-form-item label="名称">
                     <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="唯一标识">
+                    <el-input v-model="form.flag" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="描述">
                     <el-input v-model="form.description" autocomplete="off"></el-input>
@@ -122,7 +126,8 @@ export default {
             },
             expends: [],
             checks: [],
-            roleId: 0
+            roleId: 0,
+            roleFlag:'',
         }
     },
     // 请求分页查询数据
@@ -161,6 +166,9 @@ export default {
                 if (res.code === '200') {
                     this.$message.success("绑定成功")
                     this.menuDialogVis = false
+                    if(this.roleFlag==='ROLE_ADMIN'){
+                        this.$store.commit("logout")
+                    }
                 } else {
                     this.$message.error(res.msg)
                 }
@@ -214,9 +222,10 @@ export default {
             this.pageNum = pageNum
             this.load()
         },
-        selectMenu(roleId) {
+        selectMenu(role) {
             this.menuDialogVis = true;
-            this.roleId = roleId;
+            this.roleId = role.id;
+            this.roleFlag = role.flag;
             // 请求菜单数据
             this.request.get("/menu", {}).then(res => {
                 console.log(res);
@@ -225,7 +234,17 @@ export default {
                 this.expends = this.menuData.map(v => v.id)
             })
             this.request.get("/role/roleMenu/" + this.roleId).then(res => {
+                // 先渲染弹窗里的元素
+                this.menuDialogVis = true
                 this.checks = res.data;
+                this.request.get("/menu/ids").then(r => {
+                    const ids = r.data
+                    ids.forEach(id => {
+                        if (!this.checks.includes(id)) {
+                            this.$refs.tree.setChecked(id, false)
+                        }
+                    })
+                })
             })
         },
     }

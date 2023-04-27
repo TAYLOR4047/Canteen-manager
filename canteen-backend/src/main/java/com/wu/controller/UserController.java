@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wu.common.Constants;
 import com.wu.common.Result;
 import com.wu.controller.dto.UserDTO;
+import com.wu.controller.dto.UserPasswordDTO;
 import com.wu.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -184,6 +185,19 @@ public class UserController {
         QueryWrapper<User> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("username",username);
         return Result.success(userService.getOne(queryWrapper));
+    }
+
+
+    /**
+     * 修改密码
+     *
+     * @param userPasswordDTO 修改密码的结构体
+     * @return 返回修改密码的结果
+     */
+    @PostMapping("/password")
+    public Result password(@RequestBody UserPasswordDTO userPasswordDTO) {
+        userService.updatePassword(userPasswordDTO);
+        return Result.success();
     }
 
 

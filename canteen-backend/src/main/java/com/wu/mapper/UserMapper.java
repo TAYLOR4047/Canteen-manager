@@ -1,5 +1,7 @@
 package com.wu.mapper;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wu.controller.dto.UserPasswordDTO;
 import com.wu.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Delete;
@@ -18,16 +20,7 @@ import java.util.List;
  * @since 2023-04-26
  */
 public interface UserMapper extends BaseMapper<User> {
-    @Select("select count(*) from user where username like concat('%',#{username},'%')")
-    Integer selectTotal(String username);
+    int updatePassword(@Param("userPasswordDTO") UserPasswordDTO userPasswordDTO);
 
-    @Select("select * from user")
-    List<User> findAll();
-
-    @Insert("insert into user(username,password,nickname,email,phone,address) values (#{username},#{password},#{nickname},#{email},#{phone},#{address})")
-    int insert(User user);
-
-    int update(User user);
-    @Delete("delete from user where id=#{id}")
-    Integer deleteById(@Param("id") Integer id);
+    Page<User> findPage(Page<User> page, @Param("username") String username, @Param("email") String email, @Param("address") String address);
 }
