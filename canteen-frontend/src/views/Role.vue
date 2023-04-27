@@ -32,8 +32,9 @@
             <el-table-column prop="id" label="ID" width="80"></el-table-column>
             <el-table-column prop="name" label="名称"></el-table-column>
             <el-table-column prop="description" label="描述"></el-table-column>
-            <el-table-column label="操作" width="200" align="center">
+            <el-table-column label="操作" width="280" align="center">
                 <template slot-scope="scope">
+                    <el-button type="info" @click="selectMenu(scope.row.id)">分配菜单 <i class="el-icon-menu"></i></el-button>
                     <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
                     <el-popconfirm
                             class="ml-5"
