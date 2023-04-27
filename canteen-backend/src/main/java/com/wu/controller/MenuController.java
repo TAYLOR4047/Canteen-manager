@@ -2,6 +2,7 @@ package com.wu.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wu.common.Result;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -45,10 +46,22 @@ public class MenuController {
         return menuService.removeByIds(ids);
     }
 
+
+    @GetMapping("/ids")
+    public Result findAllIds() {
+        return Result.success(menuService.list().stream().map(Menu::getId));
+    }
+
     @GetMapping
+    public Result findAll(@RequestParam(defaultValue = "") String name) {
+        return Result.success(menuService.findMenus(name));
+    }
+
+
+/*    @GetMapping
     public List<Menu> findAll() {
         return menuService.list();
-    }
+    }*/
 
     @GetMapping("/{id}")
     public Menu findOne(@PathVariable Integer id) {

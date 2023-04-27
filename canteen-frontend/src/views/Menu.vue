@@ -11,7 +11,7 @@
 
         <!--      表格外部操作部分          -->
         <div style="margin: 10px 0">
-            <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
+            <el-button type="primary" @click="handleAdd(null)">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
             <el-popconfirm
                     class="ml-5"
                     confirm-button-text='确定'
@@ -26,7 +26,8 @@
         </div>
 
         <!--        表格内部操作部分        -->
-        <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"
+        <el-table :data="tableData" border stripe:header-cell-class-name="'headerBg'"
+                  row-key="id" default-expand-all
                   @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="id" label="ID" width="80"></el-table-column>
@@ -34,8 +35,11 @@
             <el-table-column prop="path" label="路径"></el-table-column>
             <el-table-column prop="icon" label="图标"></el-table-column>
             <el-table-column prop="description" label="描述"></el-table-column>
-            <el-table-column label="操作" width="200" align="center">
+            <el-table-column label="操作" width="300" align="center">
                 <template slot-scope="scope">
+                    <el-button type="primary" @click="handleAdd(scope.row.id)" v-if="!scope.row.pid && !scope.row.path">
+                        新增子菜单 <i class="el-icon-plus"></i>
+                    </el-button>
                     <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
                     <el-popconfirm
                             class="ml-5"
@@ -58,7 +62,7 @@
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
                     :current-page="pageNum"
-                    :page-sizes="[2, 5, 10, 20]"
+                    :page-sizes="[5, 10, 20]"
                     :page-size="pageSize"
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="total">
@@ -101,7 +105,7 @@ export default {
             name: "",
             form: {},
             dialogFormVisible: false,
-            multipleSelection: []
+            multipleSelection: [],
         }
     },
     // 请求分页查询数据
@@ -135,9 +139,12 @@ export default {
                 }
             })
         },
-        handleAdd() {
-            this.dialogFormVisible = true
-            this.form = {}
+        handleAdd(pid) {
+            this.dialogFormVisible = true;
+            this.form = {};
+            if (pid) {
+                this.form.pid = pid
+            }
         },
         handleEdit(row) {
             this.form = row
