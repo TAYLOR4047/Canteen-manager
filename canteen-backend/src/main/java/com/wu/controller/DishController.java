@@ -2,6 +2,8 @@ package com.wu.controller;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.wu.common.Result;
+import com.wu.entity.Files;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -29,10 +31,12 @@ public class DishController {
     @Resource
     private IDishService dishService;
 
+    public static final String DISH_KEY = "DISH_FRONT_ALL";
+
     // 新增或者更新
     @PostMapping
     public boolean save(@RequestBody Dish dish) {
-        return dishService.saveOrUpdate(dish);
+        return dishService.save(dish);
     }
 
     @DeleteMapping("/{id}")
@@ -56,10 +60,29 @@ public class DishController {
     }
 
     @GetMapping("/page")
-    public Page<Dish> findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+    public Page<Dish> findPage(@RequestParam String title,@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
         QueryWrapper<Dish> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("title",title);
         queryWrapper.orderByAsc("id");
         return dishService.page(new Page<>(pageNum, pageSize), queryWrapper);
+    }
+
+    @PostMapping("/update")
+    public Result update(@RequestBody Dish dish) {
+        dishService.updateById(dish);
+        //flushRedis(DISH_KEY);
+        return Result.success();
+    }
+
+    @PostMapping("/dishType/{dishId}")
+    public Result roleMenu(@PathVariable Integer dishId, @RequestBody List<Integer> typeIds) {
+        dishService.setDishType(dishId, typeIds);
+        return Result.success();
+    }
+
+    @GetMapping("/dishType/{dishId}")
+    public Result getDishType(@PathVariable Integer dishId) {
+        return Result.success(dishService.getDishType(dishId));
     }
 
 }

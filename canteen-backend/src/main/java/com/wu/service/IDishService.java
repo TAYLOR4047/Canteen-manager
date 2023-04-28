@@ -15,5 +15,7 @@ import java.util.List;
  */
 public interface IDishService extends IService<Dish> {
 
+    void setDishType(Integer dishId, List<Integer> typeIds);
 
+    List<Integer> getDishType(Integer dishId);
 }
