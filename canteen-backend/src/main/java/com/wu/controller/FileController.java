@@ -10,6 +10,7 @@ import com.wu.common.Result;
 import com.wu.entity.Files;
 import com.wu.mapper.FileMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +31,8 @@ public class FileController {
     @Resource
     private FileMapper fileMapper;
 
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     public static final String FILES_KEY = "FILES_FRONT_ALL";
 
@@ -77,6 +80,7 @@ public class FileController {
         saveFile.setEnable(true);
         saveFile.setMd5(md5);
         fileMapper.insert(saveFile);
+        flushRedis(FILES_KEY);
         return url;
     }
 
@@ -147,6 +151,7 @@ public class FileController {
     @PostMapping("/update")
     public Result update(@RequestBody Files files) {
         fileMapper.updateById(files);
+        flushRedis(FILES_KEY);
         return Result.success();
     }
 
@@ -161,6 +166,7 @@ public class FileController {
         Files files = fileMapper.selectById(id);
         files.setIsDelete(true);
         fileMapper.updateById(files);
+        flushRedis(FILES_KEY);
         return Result.success();
     }
 
@@ -192,6 +198,16 @@ public class FileController {
         }
         return Result.success();
     }
+
+    /**
+     * 删除缓存
+     *
+     * @param key 要删除的缓存key
+     */
+    private void flushRedis(String key) {
+        stringRedisTemplate.delete(key);
+    }
+
 
 
 }

@@ -21,6 +21,17 @@ const routes = [
         path: '/404',
         name: '404',
         component: () => import('../views/404.vue')
+    }, {
+        path:'/front',
+        name: 'Front',
+        component:()=> import('../views/front/Front.vue'),
+        children:[
+            {
+                path: 'home',
+                name: 'FrontHome',
+                component:()=>import('../views/front/Home.vue')
+            }
+        ]
     },
 ]
 
@@ -38,7 +49,6 @@ export const resetRouter = () => {
         routes
     })
 }
-
 
 
 // 注意：刷新页面会导致页面路由重置
