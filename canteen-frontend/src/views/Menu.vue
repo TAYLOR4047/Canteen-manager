@@ -1,5 +1,5 @@
 <template>
-  <!--     页面主体       -->
+    <!--     页面主体       -->
     <div>
         <!--        搜索部分        -->
         <div style="margin: 10px 0">
@@ -13,28 +13,27 @@
         <div style="margin: 10px 0">
             <el-button type="primary" @click="handleAdd(null)">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
             <el-popconfirm
-                    class="ml-5"
-                    confirm-button-text='确定'
-                    cancel-button-text='我再想想'
-                    icon="el-icon-info"
-                    icon-color="red"
-                    title="您确定批量删除这些数据吗？"
-                    @confirm="delBatch"
+                class="ml-5"
+                confirm-button-text='确定'
+                cancel-button-text='我再想想'
+                icon="el-icon-info"
+                icon-color="red"
+                title="您确定批量删除这些数据吗？"
+                @confirm="delBatch"
             >
                 <el-button type="danger" slot="reference">批量删除 <i class="el-icon-remove-outline"></i></el-button>
             </el-popconfirm>
         </div>
 
         <!--        表格内部操作部分        -->
-        <el-table :data="tableData" border stripe:header-cell-class-name="'headerBg'"
-                  row-key="id" default-expand-all
+        <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'" row-key="id" default-expand-all
                   @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="id" label="ID" width="80"></el-table-column>
             <el-table-column prop="name" label="名称"></el-table-column>
             <el-table-column prop="path" label="路径"></el-table-column>
             <el-table-column prop="pagePath" label="页面路径"></el-table-column>
-            <el-table-column prop="icon" label="图标" class-name="fontSize18" align="center" label-class-name="fontSize12">
+            <el-table-column label="图标" class-name="fontSize18" align="center" label-class-name="fontSize12">
                 <template slot-scope="scope">
                     <span :class="scope.row.icon"/>
                 </template>
@@ -47,32 +46,19 @@
                     </el-button>
                     <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
                     <el-popconfirm
-                            class="ml-5"
-                            confirm-button-text='确定'
-                            cancel-button-text='我再想想'
-                            icon="el-icon-info"
-                            icon-color="red"
-                            title="您确定删除吗？"
-                            @confirm="del(scope.row.id)"
+                        class="ml-5"
+                        confirm-button-text='确定'
+                        cancel-button-text='我再想想'
+                        icon="el-icon-info"
+                        icon-color="red"
+                        title="您确定删除吗？"
+                        @confirm="del(scope.row.id)"
                     >
                         <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i></el-button>
                     </el-popconfirm>
                 </template>
             </el-table-column>
         </el-table>
-
-        <!--       翻页与页码部分         -->
-        <div style="padding: 10px 0">
-            <el-pagination
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :current-page="pageNum"
-                    :page-sizes="[5, 10, 20]"
-                    :page-size="pageSize"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="total">
-            </el-pagination>
-        </div>
 
         <el-dialog title="菜单信息" :visible.sync="dialogFormVisible" width="30%">
             <el-form label-width="80px" size="small">
@@ -85,7 +71,7 @@
                 <el-form-item label="页面路径">
                     <el-input v-model="form.pagePath" autocomplete="off"></el-input>
                 </el-form-item>
-                <el-form-item label="图标" >
+                <el-form-item label="图标">
                     <el-select clearable v-model="form.icon" placeholder="请选择" style="width: 100%">
                         <el-option v-for="item in options" :key="item.name" :label="item.name" :value="item.value">
                             <i :class="item.value"/> {{ item.name }}
@@ -118,7 +104,7 @@ export default {
             form: {},
             dialogFormVisible: false,
             multipleSelection: [],
-            options:[],
+            options: [],
         }
     },
     // 请求分页查询数据
@@ -128,17 +114,12 @@ export default {
     methods: {
         // 将数据库查询操作封装
         load() {
-            this.request.get("/menu/page", {
+            this.request.get("/menu", {
                 params: {
-                    pageNum: this.pageNum,
-                    pageSize: this.pageSize,
                     name: this.name,
                 }
             }).then(res => {
-                console.log(res)
-                this.tableData = res.records
-                this.total = res.total
-
+                this.tableData = res.data;
             })
         },
         save() {
@@ -162,9 +143,9 @@ export default {
         handleEdit(row) {
             this.form = row
             this.dialogFormVisible = true
-            //请求图标的数据
-            this.request.get("/menu/icons").then(res=>{
-                this.options=res.data
+            // 请求图标的数据
+            this.request.get("/menu/icons").then(res => {
+                this.options = res.data
             })
         },
         del(id) {
@@ -210,7 +191,7 @@ export default {
         exp() {
             window.open("http://localhost:9090/menu/export")
         },
-        handleExcelImportSuccess(){
+        handleExcelImportSuccess() {
             this.$message.success("文件导入成功!")
             this.load()
         }
@@ -218,17 +199,16 @@ export default {
 }
 </script>
 
-<!--表格头部样式-->
 <style>
 .headerBg {
     background: #eee !important;
 }
 
-.fontSize18{
+.fontSize18 {
     font-size: 18px;
 }
 
-.fontSize12{
+.fontSize12 {
     font-size: 12px;
 }
 </style>

@@ -1,9 +1,12 @@
 package com.wu.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.util.List;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -32,7 +35,9 @@ public class Type implements Serializable {
       @ApiModelProperty("菜品分类名")
       private String name;
 
-      @ApiModelProperty("父id")
+      @TableField(exist = false)
+      private List<Type> children;
+
       private Integer pid;
 
 
