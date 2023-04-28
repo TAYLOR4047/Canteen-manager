@@ -108,7 +108,7 @@ router.beforeEach((to, from, next) => {
     if (!to.matched.length) {
         const storeMenus = localStorage.getItem("menus")
         if (storeMenus) {
-            next("/404")
+            next("/front")
         } else {
             // 跳回登录页面
             next("/login")
