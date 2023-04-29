@@ -3,7 +3,9 @@ package com.wu.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wu.common.Result;
+import com.wu.entity.DishType;
 import com.wu.entity.Files;
+import com.wu.mapper.DishTypeMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -31,7 +33,6 @@ public class DishController {
     @Resource
     private IDishService dishService;
 
-    public static final String DISH_KEY = "DISH_FRONT_ALL";
 
     // 新增或者更新
     @PostMapping

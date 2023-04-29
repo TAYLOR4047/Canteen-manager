@@ -32,6 +32,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements ID
     @Resource
     private ITypeService typeService;
 
+    //问题是没有插入新的数据！
     @Override
     public void setDishType(Integer dishId, List<Integer> typeIds) {
         // 先删除当前角色id所有的绑定关系
@@ -55,6 +56,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements ID
             dishTypeMapper.insert(dishType);
         }
     }
+
 
     @Override
     public List<Integer> getDishType(Integer dishId) {

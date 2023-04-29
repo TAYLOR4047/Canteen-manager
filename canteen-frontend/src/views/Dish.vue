@@ -174,8 +174,7 @@ export default {
             },
             expends: [],
             checks: [],
-            roleId: 0,
-            roleFlag: '',
+            dishId: 0,
         }
     },
     // 请求分页查询数据
@@ -215,17 +214,17 @@ export default {
             this.request.post("/dish/insert", this.form).then(res => {
                 if (res) {
                     this.$message.success("保存成功")
-                    this.dialogFormVisible = false
                     this.load()
+                    this.dialogInsertFormVisible = false
                 } else {
-                    this.dialogFormVisible = false
+                    this.dialogInsertFormVisible = false
                     this.load()
                     this.$message.error("保存失败")
                 }
             })
         },
         saveRoleMenu() {
-            this.request.post("/dish/dishType/" + this.dishId, this.$refs.tree.getCheckedKeys()).then(res => {
+            this.request.post("/dish/dishType/" +this.dishId, this.$refs.tree.getCheckedKeys()).then(res => {
                 if (res.code === '200') {
                     this.$message.success("绑定成功")
                     this.menuDialogVis = false
@@ -294,7 +293,7 @@ export default {
         },
         selectMenu(dish) {
             this.menuDialogVis = true;
-            this.roleId = dish.id;
+            this.dishId = dish.id;
             //this.roleFlag = dish.flag;
             // 请求菜单数据
             this.request.get("/type", {}).then(res => {
@@ -303,7 +302,7 @@ export default {
                 // 把后台返回的菜单数据处理成id数组
                 this.expends = this.menuData.map(v => v.id)
             })
-            this.request.get("/dish/dishType/" + this.roleId).then(res => {
+            this.request.get("/dish/dishType/" + this.dishId).then(res => {
                 // 先渲染弹窗里的元素
                 this.menuDialogVis = true
                 this.checks = res.data;
