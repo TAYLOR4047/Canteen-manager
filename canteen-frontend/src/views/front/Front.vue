@@ -11,21 +11,10 @@
             </div>
             <div style="flex: 1">
                 <el-menu :default-active="'1'" class="el-menu-demo" mode="horizontal" router>
-                    <el-menu-item index="/front/home">首页</el-menu-item>
-                    <el-menu-item>视频播放</el-menu-item>
-                    <el-menu-item>文章列表</el-menu-item>
-                    <el-submenu index="2">
-                        <template slot="title">我的工作台</template>
-                        <el-menu-item>选项1</el-menu-item>
-                        <el-menu-item index="2-2">选项2</el-menu-item>
-                        <el-menu-item index="2-3">选项3</el-menu-item>
-                        <el-submenu index="2-4">
-                            <template slot="title">选项4</template>
-                            <el-menu-item index="2-4-1">选项1</el-menu-item>
-                            <el-menu-item index="2-4-2">选项2</el-menu-item>
-                            <el-menu-item index="2-4-3">选项3</el-menu-item>
-                        </el-submenu>
-                    </el-submenu>
+                    <el-menu-item index="/front">首页</el-menu-item>
+                    <el-menu-item index="/front/custom-menu">点餐</el-menu-item>
+                    <el-menu-item index="/front/custom-cart">购物车</el-menu-item>
+                    <el-menu-item index="/front/custom-order-details">订单详情</el-menu-item>
                 </el-menu>
             </div>
             <div style="width: 200px">
@@ -63,8 +52,10 @@
 </template>
 
 <script>
+import router from "@/router";
+
 export default {
-    name: "Front",
+    name: "Front-Home",
     data() {
         return {
             user: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : {}
@@ -74,6 +65,9 @@ export default {
 
     },
     methods: {
+        router() {
+            return router
+        },
         logout() {
             this.$store.commit("logout")
             this.$message.success("退出成功")

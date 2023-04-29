@@ -1,5 +1,6 @@
 <template>
     <div>
+<!--        滚动栏界面-->
         <div style="margin: 10px 0">
             <el-carousel height="450px" :interval="10000">
                 <el-carousel-item v-for="item in imgs" :key="item">
@@ -10,11 +11,12 @@
 
         <div style="margin: 10px 0">
             <el-row :gutter="10">
-                <el-col :span="6" v-for="item in files" :key="item.id" style="margin-bottom: 10px">
+                <el-col :span="6" v-for="item in dish" :key="item.id" style="margin-bottom: 10px">
                     <div style="border: 1px solid #ccc; padding-bottom: 10px">
-                        <img :src="item.url" alt="" style="width: 100%">
-                        <div style="color: #666; padding: 10px">{{ item.name }}</div>
+                        <img :src="item.image" alt="" style="width: 100%">
+                        <div style="color: #666; padding: 10px">{{ item.title }}</div>
                         <div style="padding: 10px">
+                            <el-tag> 价格:100</el-tag>
                             <el-button type="primary">购买</el-button>
                         </div>
                     </div>
@@ -25,8 +27,15 @@
 </template>
 
 <script>
+import dish from "@/views/Dish.vue";
+
 export default {
     name: "FrontHome",
+    computed: {
+        dish() {
+            return dish
+        }
+    },
     data() {
         return {
             imgs: [

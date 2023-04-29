@@ -27,9 +27,24 @@ const routes = [
         component:()=> import('../views/front/Front.vue'),
         children:[
             {
-                path: 'home',
-                name: 'FrontHome',
+                path: '',
+                name: 'Front-Home',
                 component:()=>import('../views/front/Home.vue')
+            },
+            {
+                path: 'custom-menu',
+                name: 'Front-Menu',
+                component:()=>import('../views/front/Menu.vue')
+            },
+            {
+                path: 'custom-cart',
+                name: 'Front-Cart',
+                component:()=>import('../views/front/Cart.vue')
+            },
+            {
+                path: 'custom-order-details',
+                name: 'Front-Order-Details',
+                component:()=>import('../views/front/OrderDetails.vue')
             }
         ]
     },
@@ -111,7 +126,7 @@ router.beforeEach((to, from, next) => {
             next("/front")
         } else {
             // 跳回登录页面
-            next("/login")
+            next("/front")
         }
     }
     next()  // 放行路由
