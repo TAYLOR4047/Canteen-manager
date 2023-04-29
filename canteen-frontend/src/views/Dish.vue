@@ -38,14 +38,14 @@
             filter-placement="bottom-end">
                 <template slot-scope="scope">
                     <el-tag
-                        :type="scope.row.status === 1 ? 'primary' : 'success'"
+                        :type="scope.row.status === 1 ? 'primary' : 'danger'"
                         disable-transitions>{{scope.row.status === 1 ? '上架' : '下架'}}
                     </el-tag>
                 </template>
             </el-table-column>
             <el-table-column label="操作" width="280" align="center">
                 <template slot-scope="scope">
-                    <el-button type="info" @click="selectMenu(scope.row)">分配菜单 <i class="el-icon-menu"></i>
+                    <el-button type="info" @click="selectMenu(scope.row)">餐品分配 <i class="el-icon-menu"></i>
                     </el-button>
                     <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i>
                     </el-button>
@@ -96,7 +96,7 @@
             </div>
         </el-dialog>
 
-        <el-dialog title="菜单分配" :visible.sync="menuDialogVis" width="30%">
+        <el-dialog title="餐品分类所属分配" :visible.sync="menuDialogVis" width="30%">
             <el-tree
                     :props="props"
                     :data="menuData"
@@ -169,6 +169,8 @@ export default {
                     this.dialogFormVisible = false
                     this.load()
                 } else {
+                    this.dialogFormVisible = false
+                    this.load()
                     this.$message.error("保存失败")
                 }
             })
@@ -180,6 +182,7 @@ export default {
                     this.menuDialogVis = false
                 } else {
                     this.$message.error(res.msg)
+                    this.menuDialogVis = false
                 }
             })
         },

@@ -36,7 +36,7 @@ public class DishController {
     // 新增或者更新
     @PostMapping
     public boolean save(@RequestBody Dish dish) {
-        return dishService.save(dish);
+        return dishService.saveOrUpdate(dish);
     }
 
     @DeleteMapping("/{id}")

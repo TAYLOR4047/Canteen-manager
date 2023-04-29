@@ -15,6 +15,9 @@ import java.util.List;
  */
 public interface IDishService extends IService<Dish> {
 
+    @Override
+    boolean save(Dish entity);
+
     void setDishType(Integer dishId, List<Integer> typeIds);
 
     List<Integer> getDishType(Integer dishId);
