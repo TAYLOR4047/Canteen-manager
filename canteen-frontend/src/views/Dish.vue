@@ -87,15 +87,6 @@
 
         <el-dialog title="更新餐品详情" :visible.sync="dialogFormVisible" width="30%">
             <el-form label-width="80px" size="small">
-                <el-upload
-                    class="image-uploader"
-                    :action="'http://localhost:9090/file/upload'"
-                    :show-file-list="false"
-                    :on-success="handleImageSuccess"
-                >
-                    <img v-if="form.image" :src="form.image" class="image">
-                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-                </el-upload>
                 <el-form-item label="餐品名称">
                     <el-input v-model="form.title" autocomplete="off"></el-input>
                 </el-form-item>

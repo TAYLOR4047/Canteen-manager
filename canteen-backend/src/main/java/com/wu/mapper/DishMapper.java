@@ -14,4 +14,6 @@ import org.apache.ibatis.annotations.Select;
  */
 public interface DishMapper extends BaseMapper<Dish> {
 
+    @Override
+    int insert(Dish entity);
 }

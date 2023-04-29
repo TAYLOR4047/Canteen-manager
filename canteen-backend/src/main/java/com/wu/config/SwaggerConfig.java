@@ -38,7 +38,7 @@ public class SwaggerConfig {
 
     /**
      * 创建该API的基本信息（这些基本信息会展现在文档页面中）
-     * 访问地址：http://ip:port/swagger-ui.html
+     * 访问地址：http://localhost:9090/swagger-ui.html
      *
      * @return
      */
@@ -47,7 +47,7 @@ public class SwaggerConfig {
                 .title(title)
                 .description("更多请关注: https://blog.csdn.net/IronmanJay?spm=1003.2020.3001.5343")
                 .termsOfServiceUrl("https://blog.csdn.net/IronmanJay?spm=1003.2020.3001.5343")
-                .contact(new Contact("IronmanJay", "https://blog.csdn.net/IronmanJay?spm=1003.2020.3001.5343", "1975686676@qq.com"))
+                .contact(new Contact("NaHCO3", "https://blog.csdn.net/IronmanJay?spm=1003.2020.3001.5343", "1975686676@qq.com"))
                 .version(version)
                 .build();
     }

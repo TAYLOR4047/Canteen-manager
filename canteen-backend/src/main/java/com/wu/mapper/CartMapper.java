@@ -6,6 +6,12 @@ import org.apache.ibatis.annotations.Param;
 import java.util.Date;
 
 public interface CartMapper {
+
+    /**
+     * 插入购物车数据
+     * @param cart 购物车数据
+     * @return 受影响的行数
+     */
     Integer insert(Cart cart);
 
     /**
