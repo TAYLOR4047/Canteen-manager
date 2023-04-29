@@ -30,6 +30,14 @@
                   @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
             <el-table-column prop="id" label="ID" width="80"></el-table-column>
+            <el-table-column  label="图片预览" width="80">
+                <template slot-scope="scope">
+                    <el-popover placement="top-start" title="" trigger="hover">
+                        <img :src="scope.row.image" alt="" style="width: 150px;height: 150px">
+                        <img slot="reference" :src="scope.row.image" style="width: 30px;height: 30px">
+                    </el-popover>
+                </template>
+            </el-table-column>
             <el-table-column prop="title" label="餐品名称"></el-table-column>
             <el-table-column prop="price" label="价格"></el-table-column>
             <el-table-column prop="status" label="餐品状态"
@@ -79,6 +87,15 @@
 
         <el-dialog title="更新餐品详情" :visible.sync="dialogFormVisible" width="30%">
             <el-form label-width="80px" size="small">
+                <el-upload
+                    class="image-uploader"
+                    :action="'http://localhost:9090/file/upload'"
+                    :show-file-list="false"
+                    :on-success="handleImageSuccess"
+                >
+                    <img v-if="form.image" :src="form.image" class="image">
+                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload>
                 <el-form-item label="餐品名称">
                     <el-input v-model="form.title" autocomplete="off"></el-input>
                 </el-form-item>
@@ -267,6 +284,7 @@ export default {
             this.pageNum = pageNum
             this.load()
         },
+
         changeEnable(row) {
             this.request.post("/dish/update", row).then(res => {
                 if (res.code === '200') {
