@@ -38,6 +38,10 @@ public class DishController {
     public boolean save(@RequestBody Dish dish) {
         return dishService.saveOrUpdate(dish);
     }
+    @PostMapping("/insert")
+    public boolean insert(@RequestBody Dish dish) {
+        return dishService.save(dish);
+    }
 
     @DeleteMapping("/{id}")
     public Boolean delete(@PathVariable Integer id) {
@@ -70,7 +74,6 @@ public class DishController {
     @PostMapping("/update")
     public Result update(@RequestBody Dish dish) {
         dishService.updateById(dish);
-        //flushRedis(DISH_KEY);
         return Result.success();
     }
 

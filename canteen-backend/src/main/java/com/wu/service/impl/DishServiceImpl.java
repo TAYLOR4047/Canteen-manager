@@ -33,11 +33,6 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements ID
     private ITypeService typeService;
 
     @Override
-    public boolean save(Dish entity) {
-        return false;
-    }
-
-    @Override
     public void setDishType(Integer dishId, List<Integer> typeIds) {
         dishTypeMapper.deleteByDishId(dishId);
         List<Integer> typeIdsCopy= CollUtil.newArrayList(typeIds);

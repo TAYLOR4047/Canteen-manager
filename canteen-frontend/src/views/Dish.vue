@@ -77,7 +77,7 @@
             </el-pagination>
         </div>
 
-        <el-dialog title="新增餐品详情" :visible.sync="dialogFormVisible" width="30%">
+        <el-dialog title="更新餐品详情" :visible.sync="dialogFormVisible" width="30%">
             <el-form label-width="80px" size="small">
                 <el-form-item label="餐品名称">
                     <el-input v-model="form.title" autocomplete="off"></el-input>
@@ -92,7 +92,25 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="save">确 定</el-button>
+                <el-button type="primary" @click="updateDish">确 定</el-button>
+            </div>
+        </el-dialog>
+
+        <el-dialog title="新增餐品详情" :visible.sync="dialogInsertFormVisible" width="30%">
+            <el-form label-width="80px" size="small">
+                <el-form-item label="餐品名称">
+                    <el-input v-model="form.title" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="餐品价格">
+                    <el-input v-model="form.price" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="餐品状态">
+                    <el-input v-model="form.status" autocomplete="off"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogInsertFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="insertDish">确 定</el-button>
             </div>
         </el-dialog>
 
@@ -130,6 +148,7 @@ export default {
             title: "",
             form: {},
             dialogFormVisible: false,
+            dialogInsertFormVisible: false,
             menuDialogVis: false,
             multipleSelection: [],
             menuData: [],
@@ -162,8 +181,21 @@ export default {
 
             });
         },
-        save() {
+        updateDish() {
             this.request.post("/dish", this.form).then(res => {
+                if (res) {
+                    this.$message.success("保存成功")
+                    this.dialogFormVisible = false
+                    this.load()
+                } else {
+                    this.dialogFormVisible = false
+                    this.load()
+                    this.$message.error("保存失败")
+                }
+            })
+        },
+        insertDish() {
+            this.request.post("/dish/insert", this.form).then(res => {
                 if (res) {
                     this.$message.success("保存成功")
                     this.dialogFormVisible = false
@@ -187,7 +219,7 @@ export default {
             })
         },
         handleAdd() {
-            this.dialogFormVisible = true
+            this.dialogInsertFormVisible = true
             this.form = {}
         },
         handleEdit(row) {
@@ -246,17 +278,17 @@ export default {
             this.roleId = role.id;
             this.roleFlag = role.flag;
             // 请求菜单数据
-            this.request.get("/menu", {}).then(res => {
+            this.request.get("/type", {}).then(res => {
                 console.log(res);
                 this.menuData = res.data;
                 // 把后台返回的菜单数据处理成id数组
                 this.expends = this.menuData.map(v => v.id)
             })
-            this.request.get("/role/roleMenu/" + this.roleId).then(res => {
+            this.request.get("/dish/dishType/" + this.roleId).then(res => {
                 // 先渲染弹窗里的元素
                 this.menuDialogVis = true
                 this.checks = res.data;
-                this.request.get("/menu/ids").then(r => {
+                this.request.get("/type/ids").then(r => {
                     const ids = r.data
                     ids.forEach(id => {
                         if (!this.checks.includes(id)) {
