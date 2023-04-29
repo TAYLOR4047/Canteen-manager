@@ -34,11 +34,15 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements ID
 
     @Override
     public void setDishType(Integer dishId, List<Integer> typeIds) {
+        // 先删除当前角色id所有的绑定关系
         dishTypeMapper.deleteByDishId(dishId);
+        // 再把前端传过来的菜单id数组绑定到当前的这个角色id上去
         List<Integer> typeIdsCopy= CollUtil.newArrayList(typeIds);
         for(Integer typeId : typeIds){
             Type type= typeService.getById(typeId);
             if(type.getPid()!=null&&!typeIdsCopy.contains(type.getPid())){
+                // 二级菜单 并且传过来的menuId数组里面没有它的父级id
+                // 那么我们就得补上这个父级id
                 DishType dishType=new DishType();
                 dishType.setDishId(dishId);
                 dishType.setTypeId(type.getPid());

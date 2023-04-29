@@ -128,7 +128,7 @@
                 </span>
             </el-tree>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button @click="menuDialogVis = false">取 消</el-button>
                 <el-button type="primary" @click="saveRoleMenu">确 定</el-button>
             </div>
         </el-dialog>
@@ -214,6 +214,7 @@ export default {
                     this.menuDialogVis = false
                 } else {
                     this.$message.error(res.msg)
+                    this.$message.error("绑定失败")
                     this.menuDialogVis = false
                 }
             })
@@ -273,10 +274,10 @@ export default {
                 }
             })
         },
-        selectMenu(role) {
+        selectMenu(dish) {
             this.menuDialogVis = true;
-            this.roleId = role.id;
-            this.roleFlag = role.flag;
+            this.roleId = dish.id;
+            //this.roleFlag = dish.flag;
             // 请求菜单数据
             this.request.get("/type", {}).then(res => {
                 console.log(res);

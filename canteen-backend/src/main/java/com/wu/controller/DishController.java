@@ -78,7 +78,7 @@ public class DishController {
     }
 
     @PostMapping("/dishType/{dishId}")
-    public Result roleMenu(@PathVariable Integer dishId, @RequestBody List<Integer> typeIds) {
+    public Result dishType(@PathVariable Integer dishId, @RequestBody List<Integer> typeIds) {
         dishService.setDishType(dishId, typeIds);
         return Result.success();
     }

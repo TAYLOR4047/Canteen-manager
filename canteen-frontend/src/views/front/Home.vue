@@ -36,13 +36,18 @@ export default {
             files: []
         }
     },
+    ///echarts/file/front/all
     created() {
-        this.request.get("/echarts/file/front/all").then(res => {
-            console.log(res.data)
-            this.files = res.data.filter(v => v.type === 'png' || v.type === 'jpg' || v.type === 'webp')
-        })
+        this.load()
     },
-    methods: {}
+    methods: {
+        load() {
+            this.request.get("/echarts/file/front/all").then(res => {
+                console.log(res.data)
+                this.files = res.data.filter(v => v.type === 'png' || v.type === 'jpg' || v.type === 'webp')
+            })
+        }
+    }
 }
 </script>
 
