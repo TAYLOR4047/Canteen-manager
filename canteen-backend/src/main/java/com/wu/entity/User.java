@@ -53,9 +53,6 @@ public class User implements Serializable {
     @ApiModelProperty("地址")
     private String address;
 
-    @ApiModelProperty("创建时间")
-    private Date createTime;
-
     @ApiModelProperty("头像")
     private String avatar;
 

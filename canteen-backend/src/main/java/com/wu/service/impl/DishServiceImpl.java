@@ -1,9 +1,7 @@
 package com.wu.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import com.wu.entity.Dish;
 import com.wu.entity.DishType;
-import com.wu.entity.Type;
 import com.wu.mapper.DishMapper;
 import com.wu.mapper.DishTypeMapper;
 import com.wu.service.IDishService;

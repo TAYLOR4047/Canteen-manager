@@ -3,9 +3,6 @@ package com.wu.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wu.common.Result;
-import com.wu.entity.DishType;
-import com.wu.entity.Files;
-import com.wu.mapper.DishTypeMapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -24,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author NaHCO3
- * @since 2023-04-28
+ * @since 2023-05-04
  */
 @RestController
 @RequestMapping("/dish")
@@ -32,7 +29,6 @@ public class DishController {
 
     @Resource
     private IDishService dishService;
-
 
     // 新增或者更新
     @PostMapping
@@ -43,7 +39,6 @@ public class DishController {
     public boolean insert(@RequestBody Dish dish) {
         return dishService.save(dish);
     }
-
     @DeleteMapping("/{id}")
     public Boolean delete(@PathVariable Integer id) {
         return dishService.removeById(id);
@@ -65,10 +60,10 @@ public class DishController {
     }
 
     @GetMapping("/page")
-    public Page<Dish> findPage(@RequestParam String title,@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+    public Page<Dish> findPage(@RequestParam String name,@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
         QueryWrapper<Dish> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("title",title);
-        queryWrapper.orderByAsc("id");
+        queryWrapper.like("name",name);
+        queryWrapper.orderByDesc("id");
         return dishService.page(new Page<>(pageNum, pageSize), queryWrapper);
     }
 
@@ -88,6 +83,5 @@ public class DishController {
     public Result getDishType(@PathVariable Integer dishId) {
         return Result.success(dishService.getDishType(dishId));
     }
-
 }
 

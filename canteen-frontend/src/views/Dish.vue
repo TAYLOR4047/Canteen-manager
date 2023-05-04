@@ -1,10 +1,10 @@
 <template>
-  <!--     页面主体       -->
+    <!--     页面主体       -->
     <div>
         <!--        搜索部分        -->
         <div style="margin: 10px 0">
             <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search"
-                      v-model="title"></el-input>
+                      v-model="name"></el-input>
             <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
             <el-button type="warning" @click="reset">重置</el-button>
         </div>
@@ -13,13 +13,13 @@
         <div style="margin: 10px 0">
             <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
             <el-popconfirm
-                    class="ml-5"
-                    confirm-button-text='确定'
-                    cancel-button-text='我再想想'
-                    icon="el-icon-info"
-                    icon-color="red"
-                    title="您确定批量删除这些数据吗？"
-                    @confirm="delBatch"
+                class="ml-5"
+                confirm-button-text='确定'
+                cancel-button-text='我再想想'
+                icon="el-icon-info"
+                icon-color="red"
+                title="您确定批量删除这些数据吗？"
+                @confirm="delBatch"
             >
                 <el-button type="danger" slot="reference">批量删除 <i class="el-icon-remove-outline"></i></el-button>
             </el-popconfirm>
@@ -38,16 +38,16 @@
                     </el-popover>
                 </template>
             </el-table-column>
-            <el-table-column prop="title" label="餐品名称"></el-table-column>
+            <el-table-column prop="name" label="餐品名称"></el-table-column>
             <el-table-column prop="price" label="价格"></el-table-column>
             <el-table-column prop="status" label="餐品状态"
-            :filters="[{text:'上架',value:1},{text:'下架',value:0}]"
-            :filter-method="filterStatus"
-            filter-placement="bottom-end">
+                             :filters="[{text:'上架',value:1},{text:'下架',value:0}]"
+                             :filter-method="filterStatus"
+                             filter-placement="bottom-end">
                 <template slot-scope="scope">
                     <el-tag
-                        :type="scope.row.status === 1 ? 'primary' : 'danger'"
-                        disable-transitions>{{scope.row.status === 1 ? '上架' : '下架'}}
+                        :type="scope.row.status == 1 ? 'primary' : 'danger'"
+                        disable-transitions>{{scope.row.status == 1 ? '上架' : '下架'}}
                     </el-tag>
                 </template>
             </el-table-column>
@@ -58,13 +58,13 @@
                     <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i>
                     </el-button>
                     <el-popconfirm
-                            class="ml-5"
-                            confirm-button-text='确定'
-                            cancel-button-text='我再想想'
-                            icon="el-icon-info"
-                            icon-color="red"
-                            title="您确定删除吗？"
-                            @confirm="del(scope.row.id)">
+                        class="ml-5"
+                        confirm-button-text='确定'
+                        cancel-button-text='我再想想'
+                        icon="el-icon-info"
+                        icon-color="red"
+                        title="您确定删除吗？"
+                        @confirm="del(scope.row.id)">
                         <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i>
                         </el-button>
                     </el-popconfirm>
@@ -75,20 +75,20 @@
         <!--       翻页与页码部分         -->
         <div style="padding: 10px 0">
             <el-pagination
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :current-page="pageNum"
-                    :page-sizes="[2, 5, 10, 20]"
-                    :page-size="pageSize"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="total">
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageNum"
+                :page-sizes="[2, 5, 10, 20]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
             </el-pagination>
         </div>
 
         <el-dialog title="更新餐品详情" :visible.sync="dialogFormVisible" width="30%">
             <el-form label-width="80px" size="small">
                 <el-form-item label="餐品名称">
-                    <el-input v-model="form.title" autocomplete="off"></el-input>
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="餐品价格">
                     <el-input v-model="form.price" autocomplete="off"></el-input>
@@ -107,7 +107,7 @@
         <el-dialog title="新增餐品详情" :visible.sync="dialogInsertFormVisible" width="30%">
             <el-form label-width="80px" size="small">
                 <el-form-item label="餐品名称">
-                    <el-input v-model="form.title" autocomplete="off"></el-input>
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item label="餐品价格">
                     <el-input v-model="form.price" autocomplete="off"></el-input>
@@ -124,13 +124,13 @@
 
         <el-dialog title="餐品分类所属分配" :visible.sync="menuDialogVis" width="30%">
             <el-tree
-                    :props="props"
-                    :data="menuData"
-                    show-checkbox
-                    node-key="id"
-                    ref="tree"
-                    :default-expanded-keys="expends"
-                    :default-checked-keys="checks">
+                :props="props"
+                :data="menuData"
+                show-checkbox
+                node-key="id"
+                ref="tree"
+                :default-expanded-keys="expends"
+                :default-checked-keys="checks">
                 <span class="custom-tree-node" slot-scope="{ node, data }">
                     <span><i :class="data.icon"></i> {{ data.name }}</span>
                 </span>
@@ -153,7 +153,7 @@ export default {
             total: 0,
             pageNum: 1,
             pageSize: 10,
-            title: "",
+            name: "",
             form: {},
             dialogFormVisible: false,
             dialogInsertFormVisible: false,
@@ -161,7 +161,7 @@ export default {
             multipleSelection: [],
             menuData: [],
             props: {
-                label: 'title',
+                label: 'name',
             },
             expends: [],
             checks: [],
@@ -179,7 +179,7 @@ export default {
                 params: {
                     pageNum: this.pageNum,
                     pageSize: this.pageSize,
-                    title: this.title,
+                    name: this.name,
                 }
             }).then(res => {
                 console.log(res)
@@ -205,12 +205,12 @@ export default {
             this.request.post("/dish/insert", this.form).then(res => {
                 if (res) {
                     this.$message.success("保存成功")
-                    this.load()
                     this.dialogInsertFormVisible = false
+                    this.load()
                 } else {
                     this.dialogInsertFormVisible = false
-                    this.load()
                     this.$message.error("保存失败")
+                    this.load()
                 }
             })
         },
@@ -260,7 +260,7 @@ export default {
             })
         },
         reset() {
-            this.title = ""
+            this.name = ""
             this.load()
         },
         // 动态分页请求

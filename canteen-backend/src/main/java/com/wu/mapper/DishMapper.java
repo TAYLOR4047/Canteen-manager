@@ -2,7 +2,6 @@ package com.wu.mapper;
 
 import com.wu.entity.Dish;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Select;
 
 /**
  * <p>
@@ -10,10 +9,8 @@ import org.apache.ibatis.annotations.Select;
  * </p>
  *
  * @author NaHCO3
- * @since 2023-04-28
+ * @since 2023-05-04
  */
 public interface DishMapper extends BaseMapper<Dish> {
 
-    @Override
-    int insert(Dish entity);
 }
