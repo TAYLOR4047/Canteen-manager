@@ -4,6 +4,7 @@ import com.wu.entity.Dish;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -19,4 +20,5 @@ public interface IDishService extends IService<Dish> {
     void setDishType(Integer dishId, List<Integer> typeIds);
 
     List<Integer> getDishType(Integer dishId);
+
 }

@@ -21,4 +21,5 @@ public interface IUserService extends IService<User> {
     User register(UserDTO userDTO);
 
     void updatePassword(@Param("userPasswordDTO") UserPasswordDTO userPasswordDTO);
+
 }

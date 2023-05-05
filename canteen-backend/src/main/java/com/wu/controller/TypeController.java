@@ -3,6 +3,7 @@ package com.wu.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wu.common.Result;
+import com.wu.entity.Menu;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -51,6 +52,10 @@ public class TypeController {
         return Result.success(typeService.findTypes(name));
     }
 
+    @GetMapping("/ids")
+    public Result findAllIds() {
+        return Result.success(typeService.list().stream().map(Type::getId));
+    }
 
     @GetMapping("/{id}")
     public Type findOne(@PathVariable Integer id) {

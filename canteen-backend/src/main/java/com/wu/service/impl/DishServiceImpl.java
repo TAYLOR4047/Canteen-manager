@@ -4,6 +4,7 @@ import com.wu.entity.Dish;
 import com.wu.entity.DishType;
 import com.wu.mapper.DishMapper;
 import com.wu.mapper.DishTypeMapper;
+import com.wu.service.ICartService;
 import com.wu.service.IDishService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wu.service.ITypeService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -27,10 +29,6 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements ID
     @Resource
     private DishTypeMapper dishTypeMapper;
 
-    @Resource
-    private ITypeService typeService;
-
-    //问题是没有插入新的数据！
     @Override
     public void setDishType(Integer dishId, List<Integer> typeIds) {
         // 先删除当前角色id所有的绑定关系
@@ -41,7 +39,6 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements ID
             dishType.setDishId(dishId);
             dishType.setTypeId(typeId);
             dishTypeMapper.insert(dishType);
-
         }
     }
 
@@ -50,4 +47,5 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements ID
     public List<Integer> getDishType(Integer dishId) {
         return dishTypeMapper.selectByDishId(dishId);
     }
+
 }

@@ -3,7 +3,9 @@ package com.wu.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.io.Serializable;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -11,7 +13,7 @@ import lombok.Setter;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author NaHCO3
@@ -19,7 +21,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-  @TableName("t_dish")
+@TableName("t_dish")
 @ApiModel(value = "Dish对象", description = "")
 public class Dish implements Serializable {
 

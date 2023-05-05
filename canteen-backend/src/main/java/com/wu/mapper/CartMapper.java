@@ -1,42 +1,45 @@
 package com.wu.mapper;
 
+import cn.hutool.db.Page;
 import com.wu.entity.Cart;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import io.swagger.models.auth.In;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
-public interface CartMapper {
+/**
+ * <p>
+ * Mapper 接口
+ * </p>
+ *
+ * @author NaHCO3
+ * @since 2023-05-05
+ */
+public interface CartMapper extends BaseMapper<Cart> {
 
-    /**
-     * 插入购物车数据
-     * @param cart 购物车数据
-     * @return 受影响的行数
-     */
-    Integer insert(Cart cart);
 
-    /**
-     * 修改购物车中商品的数量
-     * @param cid 购物车数据id
-     * @param num 新的数量
-     * @param modifiedUser 最后修改人
-     * @param modifiedTime 最后修改时间
-     * @return 受影响的行数
-     */
-    Integer updateNumByCid(
-            @Param("cid") Integer cid,
-            @Param("num") Integer num,
-            @Param("modifiedUser") String modifiedUser,
-            @Param("modifiedTime") Date modifiedTime
-    );
+    @Override
+    int insert(Cart cart);
 
-    /**
-     * 查询某用户在购物车添加的某商品的详情
-     * @param uid 用户的id
-     * @param pid 商品的id
-     * @return 匹配的购物车详情，如果该用户没有将该商品添加到购物车，则返回null
-     */
+    void deleteByUidAndPid(@Param("pid") Integer pId, @Param("uid") Integer uId);
+
+
     Cart findByUidAndPid(
             @Param("uid") Integer uid,
             @Param("pid") Integer pid
+    );
+
+
+    @Update("UPDATE t_cart SET num=#{num} WHERE cid=#{cid} AND pid=#{pid}")
+    int updateNumByCid(
+            @Param("cid") Integer cid,
+            @Param("pid") Integer pid,
+            @Param("num") Integer num
     );
 }
