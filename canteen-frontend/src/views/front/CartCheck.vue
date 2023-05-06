@@ -3,7 +3,7 @@
     <div>
         <!--        搜索部分        -->
         <div style="margin: 10px 0">
-            <h2>请确认订单</h2>
+            <h2>购物车</h2>
         </div>
 
         <!--        表格内部操作部分        -->
@@ -12,6 +12,7 @@
                   @select="handleSum"
                   @select-all="handleSum"
                   ref="multipleTable">
+            <el-table-column type="selection" label="全选" width="80"></el-table-column>
             <el-table-column prop="cid" label="ID" width="80"></el-table-column>
             <el-table-column label="图片预览" width="80">
                 <template slot-scope="scope">
@@ -24,7 +25,9 @@
             <el-table-column prop="name" label="餐品名称"></el-table-column>
             <el-table-column prop="num" label="点餐数量">
                 <template slot-scope="scope">
+                    <el-button style="padding-left: 10px" @click="Drop(scope.row.cid,scope.row.num)">-</el-button>
                     <span style="padding-left: 20px;padding-right: 20px">{{ scope.row.num }}</span>
+                    <el-button style="padding-right: 10px" @click="Add(scope.row.cid)">+</el-button>
                 </template>
             </el-table-column>
             <el-table-column prop="price" label="价格">
@@ -35,6 +38,13 @@
             <el-table-column label="金额" width="180">
                 <template slot-scope="scope">
                     <span>￥{{ scope.row.num * scope.row.price }}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="180" align="center">
+                <template slot-scope="scope">
+                    <el-button type="danger" @click="DeleteFromCart(scope.row.cid)">取消此菜品<i
+                            class="el-icon-menu"></i>
+                    </el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -67,7 +77,7 @@
 <!--页面数据与动作Js代码-->
 <script>
 export default {
-    name: "Cart",
+    name: "Front-Cart-Check",
     data() {
         return {
             tableData: [],
@@ -175,9 +185,8 @@ export default {
             this.handleSum();
         },
         SendToOrder(){
-            this.$router.push("/front/custom-cart-check")
-        }
 
+        }
     }
 }
 </script>

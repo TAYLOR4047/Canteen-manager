@@ -21,30 +21,36 @@ const routes = [
         path: '/404',
         name: '404',
         component: () => import('../views/404.vue')
-    }, {
-        path:'/front',
+    },
+    {
+        path: '/front',
         name: 'Front',
-        component:()=> import('../views/front/Front.vue'),
-        children:[
+        component: () => import('../views/front/Front.vue'),
+        children: [
             {
                 path: '',
                 name: 'Front-Home',
-                component:()=>import('../views/front/Home.vue')
+                component: () => import('../views/front/Home.vue')
             },
             {
                 path: 'custom-menu',
                 name: 'Front-Menu',
-                component:()=>import('../views/front/Menu.vue')
+                component: () => import('../views/front/Menu.vue')
             },
             {
                 path: 'custom-cart',
                 name: 'Front-Cart',
-                component:()=>import('../views/front/Cart.vue')
+                component: () => import('../views/front/Cart.vue')
+            },
+            {
+                path: 'custom-cart-check',
+                name: 'Front-Cart-Check',
+                component: () => import('../views/front/CartCheck.vue')
             },
             {
                 path: 'custom-order-details',
                 name: 'Front-Order-Details',
-                component:()=>import('../views/front/OrderDetails.vue')
+                component: () => import('../views/front/OrderDetails.vue')
             }
         ]
     },
