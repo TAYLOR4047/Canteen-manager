@@ -61,6 +61,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
             cart.setName(dish.getName());
             cart.setImage(dish.getImage());
             cart.setCreatedUser(username);
+            cart.setChecked(0);
             // -- 补全Cart对象的属性：4个日志 > 参数username, now
             // -- 调用insert()插入数据
             int row = cartMapper.insert(cart);

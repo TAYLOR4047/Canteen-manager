@@ -14,9 +14,9 @@
     <!-- 插入购物车数据 -->
     <!-- Integer insert(Cart cart) -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="cid">
-        INSERT INTO t_cart (uid, pid,name, num, image,price,
+        INSERT INTO t_cart (uid, pid,name, num, image,price,checked,
                             created_user, modified_user)
-        VALUES (#{uid}, #{pid},#{name}, #{num},#{image}, #{price},
+        VALUES (#{uid}, #{pid},#{name}, #{num},#{image}, #{price},#{checked},
                 #{createdUser}, #{modifiedUser})
     </insert>
 

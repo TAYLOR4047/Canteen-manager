@@ -53,5 +53,7 @@ public class Cart implements Serializable {
 
     private String modifiedTime;
 
+    private Integer checked;
+
 
 }

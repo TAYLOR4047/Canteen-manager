@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author NaHCO3
@@ -24,43 +24,43 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/order")
-        public class OrderController {
-    
-@Resource
-private IOrderService orderService;
+public class OrderController {
 
-// 新增或者更新
-@PostMapping
-public boolean save(@RequestBody Order order){
-        return orderService.saveOrUpdate(order);
-        }
+    @Resource
+    private IOrderService orderService;
 
-@DeleteMapping("/{id}")
-public Boolean delete(@PathVariable Integer id){
+    // 新增或者更新
+    @PostMapping("/createOrder")
+    public boolean save(@RequestBody List<Integer> ids) {
+        return orderService.createOrder(ids);
+    }
+
+    @DeleteMapping("/{id}")
+    public Boolean delete(@PathVariable Integer id) {
         return orderService.removeById(id);
-        }
+    }
 
-@PostMapping("/del/batch")
-public boolean deleteBatch(@RequestBody List<Integer> ids){
+    @PostMapping("/del/batch")
+    public boolean deleteBatch(@RequestBody List<Integer> ids) {
         return orderService.removeByIds(ids);
-        }
+    }
 
-@GetMapping
-public List<Order> findAll(){
+    @GetMapping
+    public List<Order> findAll() {
         return orderService.list();
-        }
+    }
 
-@GetMapping("/{id}")
-public Order findOne(@PathVariable Integer id){
+    @GetMapping("/{id}")
+    public Order findOne(@PathVariable Integer id) {
         return orderService.getById(id);
-        }
+    }
 
-@GetMapping("/page")
-public Page<Order> findPage(@RequestParam Integer pageNum,@RequestParam Integer pageSize){
-        QueryWrapper<Order> queryWrapper=new QueryWrapper<>();
+    @GetMapping("/page")
+    public Page<Order> findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByDesc("id");
-        return orderService.page(new Page<>(pageNum,pageSize),queryWrapper);
-        }
+        return orderService.page(new Page<>(pageNum, pageSize), queryWrapper);
+    }
 
-        }
+}
 
