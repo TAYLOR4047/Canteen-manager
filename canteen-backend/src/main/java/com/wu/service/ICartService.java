@@ -22,4 +22,8 @@ public interface ICartService extends IService<Cart> {
 
     void addToCart(Integer pid,Integer userId);
 
+    boolean updateNumUpByCid(Integer cid);
+
+    boolean updateNumDownByCid(Integer cid);
+
 }

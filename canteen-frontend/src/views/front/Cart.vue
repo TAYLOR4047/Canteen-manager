@@ -3,18 +3,15 @@
     <div>
         <!--        搜索部分        -->
         <div style="margin: 10px 0">
-            <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search"
-                      v-model="name"></el-input>
-            <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
-            <el-button type="warning" @click="reset">重置</el-button>
+            <h2>购物车</h2>
         </div>
 
         <!--        表格内部操作部分        -->
         <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"
                   @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55"></el-table-column>
+            <el-table-column type="selection" label="全选" width="80"></el-table-column>
             <el-table-column prop="cid" label="ID" width="80"></el-table-column>
-            <el-table-column  label="图片预览" width="80">
+            <el-table-column label="图片预览" width="80">
                 <template slot-scope="scope">
                     <el-popover placement="top-start" title="" trigger="hover">
                         <img :src="scope.row.image" alt="" style="width: 150px;height: 150px">
@@ -23,15 +20,23 @@
                 </template>
             </el-table-column>
             <el-table-column prop="name" label="餐品名称"></el-table-column>
-            <el-table-column prop="num" label="点餐数量"></el-table-column>
-            <el-table-column prop="price" label="价格"></el-table-column>
-            <el-table-column label="操作" width="350" align="center">
+            <el-table-column prop="num" label="点餐数量">
                 <template slot-scope="scope">
-                    <el-button type="primary" @click="Drop(scope.row)">减少<i class="el-icon-menu"></i>
-                    </el-button>
-                    <el-button type="primary" @click="Add(scope.row)">新增<i class="el-icon-menu"></i>
-                    </el-button>
-                    <el-button type="danger" @click="DeleteFromCart(scope.row)">取消此菜品<i class="el-icon-menu"></i>
+                    <el-button style="padding-left: 10px" @click="Drop(scope.row.cid,scope.row.num)">-</el-button>
+                    <span style="padding-left: 30px;padding-right: 30px">{{ scope.row.num }}</span>
+                    <el-button style="padding-right: 10px" @click="Add(scope.row.cid)">+</el-button>
+                </template>
+            </el-table-column>
+            <el-table-column prop="price" label="价格"></el-table-column>
+            <el-table-column label="金额" width="180">
+                <template slot-scope="scope">
+                    <span>￥{{scope.row.num*scope.row.price}}</span>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="180" align="center">
+                <template slot-scope="scope">
+                    <el-button type="danger" @click="DeleteFromCart(scope.row.cid)">取消此菜品<i
+                            class="el-icon-menu"></i>
                     </el-button>
                 </template>
             </el-table-column>
@@ -42,20 +47,21 @@
 
             <div>
                 <div>
-                    购物车总价为 :
+                    <h3>购物车总价为 :{{ sumPrice }}</h3>
                 </div>
 
-            <el-button style="float: right" type="danger" @click="DeleteFromCart(scope.row)">结算<i class="el-icon-menu"></i>
-            </el-button>
+                <el-button style="float: right" type="danger" @click="">结算<i
+                        class="el-icon-menu"></i>
+                </el-button>
             </div>
             <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="pageNum"
-                :page-sizes="[5, 10, 20]"
-                :page-size="pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total">
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="pageNum"
+                    :page-sizes="[5, 10, 20]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
             </el-pagination>
         </div>
     </div>
@@ -81,6 +87,7 @@ export default {
             expends: [],
             checks: [],
             dishId: 0,
+            sumPrice:0,
         }
     },
     // 请求分页查询数据
@@ -101,50 +108,6 @@ export default {
                 this.total = res.total
 
             });
-        },
-        updateDish() {
-            this.request.post("/cart", this.form).then(res => {
-                if (res) {
-                    this.$message.success("保存成功")
-                    this.dialogFormVisible = false
-                    this.load()
-                } else {
-                    this.dialogFormVisible = false
-                    this.load()
-                    this.$message.error("保存失败")
-                }
-            })
-        },
-        insertDish() {
-            this.request.post("/cart/insert", this.form).then(res => {
-                if (res) {
-                    this.$message.success("保存成功")
-                    this.dialogInsertFormVisible = false
-                    this.load()
-                } else {
-                    this.dialogInsertFormVisible = false
-                    this.$message.error("保存失败")
-                    this.load()
-                }
-            })
-        },
-        handleAdd() {
-            this.dialogInsertFormVisible = true
-            this.form = {}
-        },
-        handleEdit(row) {
-            this.form = row
-            this.dialogFormVisible = true
-        },
-        del(id) {
-            this.request.delete("/cart/" + id).then(res => {
-                if (res) {
-                    this.$message.success("删除成功")
-                    this.load()
-                } else {
-                    this.$message.error("删除失败")
-                }
-            })
         },
         handleSelectionChange(val) {
             console.log(val)
@@ -183,9 +146,44 @@ export default {
                 }
             })
         },
-        filterStatus(value, row) {
-            return row.status === value;
+        Drop(id, num) {
+            if (num <= 1) {
+                this.$message.warning("餐品数量不得为0")
+                this.load()
+            } else {
+                this.request.post("/cart/num/drop/" + id).then(res => {
+                    if (res) {
+                        //this.$message.success("餐品减少成功")
+                        this.load()
+                    } else {
+                        this.$message.error("餐品减少失败")
+                        this.load()
+                    }
+                })
+            }
         },
+        Add(id) {
+            this.request.post("/cart/num/add/" + id).then(res => {
+                if (res) {
+                    //this.$message.success("餐品增加成功")
+                    this.load()
+                } else {
+                    this.$message.error("餐品增加失败")
+                    this.load()
+                }
+            })
+        },
+        DeleteFromCart(id) {
+            this.request.delete("/cart/" + id).then(res => {
+                if (res) {
+                    //this.$message.success("购物车取消成功")
+                    this.load()
+                } else {
+                    this.$message.error("购物车取消失败")
+                    this.load()
+                }
+            })
+        }
     }
 }
 </script>

@@ -63,6 +63,16 @@ public class CartController {
         return cartService.removeByIds(ids);
     }
 
+    @PostMapping("/num/drop/{cid}")
+    public boolean dropNum(@PathVariable Integer cid){
+        return cartService.updateNumDownByCid(cid);
+    }
+
+    @PostMapping("/num/add/{cid}")
+    public boolean addNum(@PathVariable Integer cid){
+        return cartService.updateNumUpByCid(cid);
+    }
+
     @GetMapping
     public List<Cart> findAll() {
         return cartService.list();
