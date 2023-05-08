@@ -1,17 +1,7 @@
 <template>
     <!--     页面主体       -->
     <div>
-        <!--        搜索部分        -->
         <div style="margin: 10px 0">
-            <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search"
-                      v-model="name"></el-input>
-            <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
-            <el-button type="warning" @click="reset">重置</el-button>
-        </div>
-
-        <!--      表格外部操作部分          -->
-        <div style="margin: 10px 0">
-            <el-button type="primary" @click="handleAdd">新增 <i class="el-icon-circle-plus-outline"></i></el-button>
             <el-popconfirm
                 class="ml-5"
                 confirm-button-text='确定'
@@ -21,31 +11,55 @@
                 title="您确定批量删除这些数据吗？"
                 @confirm="delBatch"
             >
-                <el-button type="danger" slot="reference">批量删除 <i class="el-icon-remove-outline"></i></el-button>
+                <el-button type="danger" slot="reference">批量删除订单记录 <i class="el-icon-remove-outline"></i>
+                </el-button>
             </el-popconfirm>
         </div>
-
         <!--        表格内部操作部分        -->
         <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"
                   @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55"></el-table-column>
-            <el-table-column prop="order_no" label="订单编号" width="80"></el-table-column>
+            <el-table-column prop="orderNo" label="订单编号" width="80"></el-table-column>
             <el-table-column prop="uname" label="下单用户"></el-table-column>
-            <el-table-column prop="total_price" label="订单总价格"></el-table-column>
-            <el-table-column prop="order_status" label="订单状态"></el-table-column>
-            <el-table-column label="操作" width="280" align="center">
+            <el-table-column prop="totalPrice" label="订单总价格"></el-table-column>
+            <el-table-column prop="orderStatus" label="订单状态">
                 <template slot-scope="scope">
-                    <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
+                    <el-tag type="danger" v-if="scope.row.orderStatus===0">用户关闭订单</el-tag>
+                    <el-tag type="warning" v-if="scope.row.orderStatus===1">未付款</el-tag>
+                    <el-tag type="success" v-if="scope.row.orderStatus===2">已付款</el-tag>
+                    <el-tag type="primary" v-if="scope.row.orderStatus===3">商家已接单</el-tag>
+                    <el-tag type="info" v-if="scope.row.orderStatus===4">交易完成</el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column prop="createTime" label="订单创建时间"></el-table-column>
+            <el-table-column prop="updateTime" label="订单更新时间">无</el-table-column>
+            <el-table-column label="操作" width="300" align="center">
+                <template slot-scope="scope">
+                    <el-button type="success" @click="OrderChecks(scope.row)">结算 <i class="el-icon-edit"></i>
+                    </el-button>
                     <el-popconfirm
                         class="ml-5"
                         confirm-button-text='确定'
                         cancel-button-text='我再想想'
                         icon="el-icon-info"
                         icon-color="red"
-                        title="您确定删除吗？"
-                        @confirm="del(scope.row.id)"
+                        title="您确定取消订单吗？"
+                        @confirm="Cancel(scope.row.id)"
                     >
-                        <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i></el-button>
+                        <el-button type="warning" slot="reference">取消订单<i class="el-icon-remove-outline"></i>
+                        </el-button>
+                    </el-popconfirm>
+                    <el-popconfirm
+                        class="ml-5"
+                        confirm-button-text='确定'
+                        cancel-button-text='我再想想'
+                        icon="el-icon-info"
+                        icon-color="red"
+                        title="您确定删除订单吗？"
+                        @confirm="Del(scope.row.id)"
+                    >
+                        <el-button type="danger" slot="reference">删除订单<i class="el-icon-remove-outline"></i>
+                        </el-button>
                     </el-popconfirm>
                 </template>
             </el-table-column>
@@ -105,8 +119,7 @@ export default {
             },
             expends: [],
             checks: [],
-            roleId: 0,
-            roleFlag:'',
+            showButton:'',
         }
     },
     // 请求分页查询数据
@@ -119,14 +132,12 @@ export default {
             this.request.get("/order/page", {
                 params: {
                     pageNum: this.pageNum,
-                    pageSize: this.pageSize,
-                    name: this.name,
+                    pageSize: this.pageSize
                 }
             }).then(res => {
                 console.log(res)
                 this.tableData = res.records
                 this.total = res.total
-
             });
         },
         save() {
@@ -148,13 +159,23 @@ export default {
             this.form = row
             this.dialogFormVisible = true
         },
-        del(id) {
-            this.request.delete("/order/" + id).then(res => {
+        Del(no) {
+            this.request.delete("/order/" + no).then(res => {
                 if (res) {
-                    this.$message.success("删除成功")
+                    this.$message.success("删除订单成功")
                     this.load()
                 } else {
-                    this.$message.error("删除失败")
+                    this.$message.error("删除订单失败")
+                }
+            })
+        },
+        Cancel(id) {
+            this.request.post("/order/" +id).then(res => {
+                if (res) {
+                    this.$message.success("取消订单成功")
+                    this.load()
+                } else {
+                    this.$message.error("取消订单失败")
                 }
             })
         },
@@ -166,16 +187,22 @@ export default {
             let ids = this.multipleSelection.map(v => v.id)  // [{}, {}, {}] => [1,2,3]
             this.request.post("/order/del/batch", ids).then(res => {
                 if (res) {
-                    this.$message.success("批量删除成功")
+                    this.$message.success("批量删除订单记录成功")
                     this.load()
                 } else {
-                    this.$message.error("批量删除失败")
+                    this.$message.error("批量删除订单记录失败")
                 }
             })
         },
         reset() {
             this.name = ""
             this.load()
+        },
+        OrderChecks(row) {
+            let status=row.orderStatus;
+            if(status==0){
+                this.$message.warning("用户已经关闭订单，无法结算")
+            }
         },
         // 动态分页请求
         handleSizeChange(pageSize) {
