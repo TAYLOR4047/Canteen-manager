@@ -49,8 +49,8 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
 
     @Override
     public Boolean removeItemByOrderNo(String no) {
-        int row=orderItemMapper.deleteOrderByOrderNo(no);
-        if(row != 1){
+        int row = orderItemMapper.deleteOrderByOrderNo(no);
+        if (row != 1) {
             return false;
         }
         return true;
@@ -58,13 +58,9 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
 
     @Override
     public Boolean removeItemsByOrderNo(List<String> nos) {
-        if (nos!=null) {
-            int row = 0;
+        if (nos != null) {
             for (String no : nos) {
-                row = orderItemMapper.deleteOrderByOrderNo(no);
-            }
-            if(row != nos.toArray().length){
-                return false;
+                orderItemMapper.deleteOrderByOrderNo(no);
             }
             return true;
         }

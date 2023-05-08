@@ -80,18 +80,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public Boolean removesByOrderNo(List<String> nos) {
         if (!nos.isEmpty()) {
-            int row = 0;
             for (String no : nos) {
-                row = orderMapper.deleteOrderByOrderNo(no);
-            }
-            if(row != nos.toArray().length){
-                return false;
+                orderMapper.deleteOrderByOrderNo(no);
             }
             return true;
         }
         return false;
     }
-
-
-
 }
