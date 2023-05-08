@@ -29,15 +29,20 @@ public interface CartMapper extends BaseMapper<Cart> {
 
     void deleteByUidAndPid(@Param("pid") Integer pId, @Param("uid") Integer uId);
 
-
     Cart findByUidAndPid(
             @Param("uid") Integer uid,
             @Param("pid") Integer pid
     );
 
 
-    @Update("UPDATE t_cart SET num=#{num} WHERE cid=#{cid}")
+    @Update("UPDATE t_cart SET num=#{num},modified_user=#{modifiedUser} WHERE cid=#{cid}")
     int updateNumByCid(
+            @Param("cid") Integer cid,
+            @Param("num") Integer num,
+            @Param("modified_user") String modifiedUser
+    );
+    @Update("UPDATE t_cart SET num=#{num} WHERE cid=#{cid}")
+    int updateNumByCidNoUser(
             @Param("cid") Integer cid,
             @Param("num") Integer num
     );

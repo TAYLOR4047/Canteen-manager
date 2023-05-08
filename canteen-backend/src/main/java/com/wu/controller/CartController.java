@@ -9,11 +9,14 @@ import com.wu.entity.User;
 import com.wu.mapper.CartMapper;
 import com.wu.service.IUserService;
 import com.wu.utils.TokenUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -32,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2023-05-05
  */
 @RestController
+@CrossOrigin
 @RequestMapping("/cart")
 public class CartController {
 
@@ -46,7 +50,7 @@ public class CartController {
     }
 
     @PostMapping("/insert/{pid}")
-    public Result insert(@PathVariable Integer pid,HttpServletRequest request) {
+    public Result insert(@PathVariable Integer pid, HttpServletRequest request) {
         String token = request.getHeader("token");
         Integer uid = Integer.parseInt(JWT.decode(token).getAudience().get(0));
         cartService.addToCart(pid, uid);
@@ -64,12 +68,12 @@ public class CartController {
     }
 
     @PostMapping("/num/drop/{cid}")
-    public boolean dropNum(@PathVariable Integer cid){
+    public boolean dropNum(@PathVariable Integer cid) {
         return cartService.updateNumDownByCid(cid);
     }
 
     @PostMapping("/num/add/{cid}")
-    public boolean addNum(@PathVariable Integer cid){
+    public boolean addNum(@PathVariable Integer cid) {
         return cartService.updateNumUpByCid(cid);
     }
 
@@ -92,6 +96,5 @@ public class CartController {
         queryWrapper.orderByAsc("cid");
         return cartService.page(new Page<>(pageNum, pageSize), queryWrapper);
     }
-
 }
 

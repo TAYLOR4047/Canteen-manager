@@ -180,31 +180,6 @@ export default {
                 }
             })
         },
-/*        selectMenu(dish) {
-            this.menuDialogVis = true;
-            this.dishId = dish.id;
-            //this.roleFlag = dish.flag;
-            // 请求菜单数据
-            this.request.get("/type", {}).then(res => {
-                console.log(res);
-                this.menuData = res.data;
-                // 把后台返回的菜单数据处理成id数组
-                this.expends = this.menuData.map(v => v.id)
-            })
-            this.request.get("/dish/dishType/" + this.dishId).then(res => {
-                // 先渲染弹窗里的元素
-                this.menuDialogVis = true
-                this.checks = res.data;
-                this.request.get("/type/ids").then(r => {
-                    const ids = r.data
-                    ids.forEach(id => {
-                        if (!this.checks.includes(id)) {
-                            this.$refs.tree.setChecked(id, false)
-                        }
-                    })
-                })
-            })
-        },*/
         filterStatus(value, row) {
             return row.status === value;
         },

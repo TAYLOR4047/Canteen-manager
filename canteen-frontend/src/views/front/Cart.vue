@@ -1,5 +1,5 @@
 <template>
-    <!--     页面主体       -->
+  <!--     页面主体       -->
     <div>
         <!--        搜索部分        -->
         <div style="margin: 10px 0">
@@ -11,8 +11,9 @@
                   @selection-change="handleSelectionChange"
                   @select="handleSum"
                   @select-all="handleSum"
-                  ref="multipleTable">
-            <el-table-column type="selection" label="全选" width="80"></el-table-column>
+                  ref="multipleTable"
+                  :reserve-selection="true">
+            <el-table-column type="selection" width="80"></el-table-column>
             <el-table-column prop="cid" label="ID" width="80"></el-table-column>
             <el-table-column label="图片预览" width="80">
                 <template slot-scope="scope">
@@ -43,7 +44,7 @@
             <el-table-column label="操作" width="180" align="center">
                 <template slot-scope="scope">
                     <el-button type="danger" @click="DeleteFromCart(scope.row.cid)">取消此菜品<i
-                        class="el-icon-menu"></i>
+                            class="el-icon-menu"></i>
                     </el-button>
                 </template>
             </el-table-column>
@@ -58,17 +59,17 @@
                 </div>
 
                 <el-button style="float: right" type="danger" @click="SendToOrder">结算<i
-                    class="el-icon-menu"></i>
+                        class="el-icon-menu"></i>
                 </el-button>
             </div>
             <el-pagination
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                :current-page="pageNum"
-                :page-sizes="[5, 10, 20]"
-                :page-size="pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :total="total">
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="pageNum"
+                    :page-sizes="[5, 10, 20]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="total">
             </el-pagination>
         </div>
     </div>
@@ -76,6 +77,8 @@
 
 <!--页面数据与动作Js代码-->
 <script>
+import {Axios} from "axios";
+
 export default {
     name: "Front-Cart",
     data() {
@@ -95,6 +98,7 @@ export default {
             checks: [],
             dishId: 0,
             sumPrice: 0,
+            orderNo: ""
         }
     },
     // 请求分页查询数据
@@ -180,9 +184,26 @@ export default {
             this.sumPrice = 0;
             this.handleSum();
         },
-        SendToOrder(){
-            this.$router.push("/front/custom-cart-check")
-        }
+        SendToOrder() {
+            console.log(this.multipleSelection.map(v => v.cid))
+            if (this.multipleSelection.map(v => v.cid).length > 0) {
+                //先将其插入至订单明细中
+
+                this.request.post("/order/insert", this.multipleSelection.map(v => v.cid)).then(set => {
+                    if(set){
+                        this.$message.success("订单添加成功")
+                        this.$router.push("custom-order")
+                    }else{
+                        this.$message.error("订单添加失败")
+                    }
+                    console.log(set)
+                })
+            } else {
+                this.$message.error("订单确认不能为空")
+                this.load()
+            }
+        },
+
     }
 }
 </script>

@@ -1,5 +1,6 @@
 package com.wu.service;
 
+import com.wu.entity.Cart;
 import com.wu.entity.Order;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -15,5 +16,11 @@ import java.util.List;
  */
 public interface IOrderService extends IService<Order> {
 
-    boolean createOrder(List<Integer> ids);
+    void addToOrder(String orderId,Integer uid,List<Integer> ids);
+
+    Boolean cancelOrderById(Integer id);
+
+    Boolean removesByOrderNo(List<String> ids);
+
+    Boolean removeByOrderNo(String id);
 }

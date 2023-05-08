@@ -14,7 +14,7 @@
                     <el-menu-item index="/front">首页</el-menu-item>
                     <el-menu-item index="/front/custom-menu">点餐</el-menu-item>
                     <el-menu-item index="/front/custom-cart">购物车</el-menu-item>
-                    <el-menu-item index="/front/custom-order-details">订单详情</el-menu-item>
+                    <el-menu-item index="/front/custom-order">订单详情</el-menu-item>
                 </el-menu>
             </div>
             <div style="width: 200px">

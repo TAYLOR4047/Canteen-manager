@@ -81,7 +81,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
             // -- 从查询结果中取出原有数量，与参数amount相加，得到新的数量
             Integer num = nums + 1;
             // -- 调用updateNumByCid()执行修改数量
-            int row = cartMapper.updateNumByCid(cid, num);
+            int row = cartMapper.updateNumByCid(cid, num,username);
             if (row != 1) {
                 System.out.println("未执行更新操作");
             }
@@ -94,7 +94,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
     @Override
     public boolean updateNumUpByCid(Integer cid) {
         Integer num=cartMapper.selectById(cid).getNum();
-        int row=cartMapper.updateNumByCid(cid,num+1);
+        int row=cartMapper.updateNumByCidNoUser(cid,num+1);
         if(row != 1){
             return false;
         }else{
@@ -105,7 +105,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
     @Override
     public boolean updateNumDownByCid(Integer cid) {
         Integer num=cartMapper.selectById(cid).getNum();
-        int row=cartMapper.updateNumByCid(cid,num-1);
+        int row=cartMapper.updateNumByCidNoUser(cid,num-1);
         if(row != 1){
             return false;
         }else{

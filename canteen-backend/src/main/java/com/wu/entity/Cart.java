@@ -1,6 +1,8 @@
 package com.wu.entity;
 
+import cn.hutool.json.JSONArray;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -54,6 +56,5 @@ public class Cart implements Serializable {
     private String modifiedTime;
 
     private Integer checked;
-
 
 }

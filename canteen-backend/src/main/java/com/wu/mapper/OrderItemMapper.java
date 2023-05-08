@@ -1,7 +1,10 @@
 package com.wu.mapper;
 
+import com.wu.entity.Cart;
 import com.wu.entity.OrderItem;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +16,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface OrderItemMapper extends BaseMapper<OrderItem> {
 
+    @Override
+    int insert(OrderItem orderItem);
+
+    @Delete("delete from t_order_item WHERE order_no like #{orderNo}")
+    int deleteOrderByOrderNo(@Param("orderNo")String orderNo);
 }

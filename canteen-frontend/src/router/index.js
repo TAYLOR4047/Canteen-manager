@@ -43,14 +43,9 @@ const routes = [
                 component: () => import('../views/front/Cart.vue')
             },
             {
-                path: 'custom-cart-check',
-                name: 'Front-Cart-Check',
-                component: () => import('../views/front/CartCheck.vue')
-            },
-            {
-                path: 'custom-order-details',
-                name: 'Front-Order-Details',
-                component: () => import('../views/front/OrderDetails.vue')
+                path: 'custom-order',
+                name: 'Front-Order',
+                component: () => import('../views/front/Order.vue')
             }
         ]
     },

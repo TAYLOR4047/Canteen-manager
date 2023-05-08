@@ -1,20 +1,75 @@
 package com.wu.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.wu.entity.Cart;
+import com.wu.entity.Dish;
 import com.wu.entity.OrderItem;
 import com.wu.mapper.OrderItemMapper;
+import com.wu.service.ICartService;
 import com.wu.service.IOrderItemService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-/**
- * <p>
- *  服务实现类
- * </p>
- *
- * @author NaHCO3
- * @since 2023-05-06
- */
+import javax.annotation.Resource;
+import java.util.List;
+
 @Service
 public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem> implements IOrderItemService {
+
+    @Autowired
+    private OrderItemMapper orderItemMapper;
+    @Autowired
+    private ICartService cartService;
+
+    @Override
+    public void addToOrderItem(String orderId, Integer uid, List<Integer> ids) {
+        if (ids != null) {
+            for (Integer cid : ids) {
+                Cart cart = cartService.getById(cid);
+                OrderItem orderItem = new OrderItem();
+
+                orderItem.setOrderNo(orderId);
+                orderItem.setDishid(cid);
+                orderItem.setDishImg(cart.getImage());
+                orderItem.setDishPrice(cart.getPrice());
+                orderItem.setNum(cart.getNum());
+                orderItem.setTotalPrice(cart.getPrice() * cart.getNum());
+                int row = orderItemMapper.insert(orderItem);
+                if (row != 1) {
+                    System.out.println("插入订单明细爆炸！");
+                } else {
+                    System.out.println("插入订单明细good！");
+                }
+            }
+        } else {
+            System.out.println("订单明细中的cid的list数组爆炸");
+        }
+
+    }
+
+    @Override
+    public Boolean removeItemByOrderNo(String no) {
+        int row=orderItemMapper.deleteOrderByOrderNo(no);
+        if(row != 1){
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean removeItemsByOrderNo(List<String> nos) {
+        if (nos!=null) {
+            int row = 0;
+            for (String no : nos) {
+                row = orderItemMapper.deleteOrderByOrderNo(no);
+            }
+            if(row != nos.toArray().length){
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
 
 }

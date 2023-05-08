@@ -40,6 +40,9 @@ public class Order implements Serializable {
     @ApiModelProperty("用户id")
     private Integer uid;
 
+    @ApiModelProperty("用户id")
+    private String uname;
+
     @ApiModelProperty("订单总价格")
     private Double totalPrice;
 

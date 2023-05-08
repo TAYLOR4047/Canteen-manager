@@ -8,12 +8,14 @@ import './assets/gloable.css'
 
 
 import request from "@/utils/request";
+import Axios from "axios";
 import store from "@/store/store";
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI, {size: "small"});
 
 Vue.prototype.request = request
+Vue.prototype.$axios=Axios
 
 new Vue({
   router,
