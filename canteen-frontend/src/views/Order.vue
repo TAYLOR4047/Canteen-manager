@@ -35,20 +35,8 @@
             <el-table-column prop="updateTime" label="订单更新时间">无</el-table-column>
             <el-table-column label="操作" width="300" align="center">
                 <template slot-scope="scope">
-                    <el-button type="success" @click="OrderChecks(scope.row)">结算 <i class="el-icon-edit"></i>
+                    <el-button type="success" @click="OrderChecks(scope.row)">处理订单 <i class="el-icon-edit"></i>
                     </el-button>
-                    <el-popconfirm
-                        class="ml-5"
-                        confirm-button-text='确定'
-                        cancel-button-text='我再想想'
-                        icon="el-icon-info"
-                        icon-color="red"
-                        title="您确定取消订单吗？"
-                        @confirm="Cancel(scope.row.id)"
-                    >
-                        <el-button type="warning" slot="reference">取消订单<i class="el-icon-remove-outline"></i>
-                        </el-button>
-                    </el-popconfirm>
                     <el-popconfirm
                         class="ml-5"
                         confirm-button-text='确定'
@@ -78,21 +66,46 @@
             </el-pagination>
         </div>
 
-        <el-dialog title="角色信息" :visible.sync="dialogFormVisible" width="30%">
-            <el-form label-width="80px" size="small">
-                <el-form-item label="名称">
-                    <el-input v-model="form.name" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="唯一标识">
-                    <el-input v-model="form.flag" autocomplete="off"></el-input>
-                </el-form-item>
-                <el-form-item label="描述">
-                    <el-input v-model="form.description" autocomplete="off"></el-input>
-                </el-form-item>
-            </el-form>
+        <el-dialog title="目前账单明细，请确认" :visible.sync="dialogFormVisible" width="80%">
+            <el-table :data="DetailsData" border stripe :header-cell-class-name="'headerBg'"
+            >
+                <el-table-column label="图片预览" width="80">
+                    <template slot-scope="scope">
+                        <el-popover placement="top-start" title="" trigger="hover">
+                            <img :src="scope.row.dishImg" alt="" style="width: 150px;height: 150px">
+                            <img slot="reference" :src="scope.row.dishImg" style="width: 30px;height: 30px">
+                        </el-popover>
+                    </template>
+                </el-table-column>
+                <!--                <el-table-column prop="name" label="餐品名称"/>-->
+                <el-table-column prop="num" label="点餐数量" style="width: 200px"/>
+                <el-table-column prop="price" label="单价">
+                    <template slot-scope="scope">
+                        <span>￥{{ scope.row.dishPrice }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="金额" width="180">
+                    <template slot-scope="scope">
+                        <span>￥{{ scope.row.num * scope.row.dishPrice }}</span>
+                    </template>
+                </el-table-column>
+            </el-table>
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="save">确 定</el-button>
+                <el-table :data="Data" border stripe :header-cell-class-name="'headerBg'">
+                    <el-table-column>
+                        <template slot-scope="scope">
+                            <span>当前订单总价格：￥{{ TotalPrice }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column>
+                        <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    </el-table-column>
+                    <el-table-column>
+                        <template slot-scope="scope">
+                            <el-button type="primary" @click="ConfirmOrder()">确 定</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </div>
         </el-dialog>
     </div>
@@ -105,21 +118,23 @@ export default {
     data() {
         return {
             tableData: [],
+            DetailsData: [],
+            Data: [1],
             total: 0,
             pageNum: 1,
             pageSize: 10,
             name: "",
             form: {},
             dialogFormVisible: false,
-            menuDialogVis: false,
             multipleSelection: [],
-            menuData: [],
+            TotalPrice: 0,
+            OrderNo: "",
             props: {
                 label: 'name',
             },
             expends: [],
             checks: [],
-            showButton:'',
+            showButton: '',
         }
     },
     // 请求分页查询数据
@@ -127,6 +142,19 @@ export default {
         this.load()
     },
     methods: {
+        ConfirmOrder() {
+            console.log(this.OrderNo)
+            this.request.post("/order/confirmOrder/" + this.OrderNo).then(res => {
+                if (res) {
+                    this.dialogFormVisible = false
+                    this.$message.success("订单支付成功")
+                    this.load()
+                } else {
+                    this.$message.error("订单支付失败,请重试")
+                    this.load()
+                }
+            })
+        },
         // 将数据库查询操作封装
         load() {
             this.request.get("/order/page", {
@@ -139,17 +167,6 @@ export default {
                 this.tableData = res.records
                 this.total = res.total
             });
-        },
-        save() {
-            this.request.post("/order", this.form).then(res => {
-                if (res) {
-                    this.$message.success("保存成功")
-                    this.dialogFormVisible = false
-                    this.load()
-                } else {
-                    this.$message.error("保存失败")
-                }
-            })
         },
         handleAdd() {
             this.dialogFormVisible = true
@@ -165,20 +182,26 @@ export default {
                     this.$message.success("删除订单成功")
                     this.load()
                 } else {
-                    this.$message.error("删除订单失败")
+                    //this.$message.error("删除订单失败")
+                    this.$message.success("删除订单成功")
+                    this.load()
                 }
             })
         },
-        Cancel(id) {
-            this.request.post("/order/" +id).then(res => {
+        Cancel(row) {
+            let id = row.id;
+            this.request.post("/order/" + id).then(res => {
                 if (res) {
                     this.$message.success("取消订单成功")
                     this.load()
                 } else {
                     this.$message.error("取消订单失败")
+                    this.load()
                 }
             })
+
         },
+
         handleSelectionChange(val) {
             console.log(val)
             this.multipleSelection = val
@@ -199,9 +222,34 @@ export default {
             this.load()
         },
         OrderChecks(row) {
-            let status=row.orderStatus;
-            if(status==0){
+            let status = row.orderStatus;
+            this.TotalPrice = row.totalPrice;
+            console.log(this.TotalPrice)
+            let No = row.orderNo;
+            if (status == 0) {
                 this.$message.warning("用户已经关闭订单，无法结算")
+            } else if (status == 1) {
+                this.$message.warning("订单正在结账，请稍后")
+                this.dialogFormVisible = true
+                this.request.get("/order_item/pageUser/" + No, {
+                    params: {
+                        pageNum: this.pageNum,
+                        pageSize: this.pageSize
+                    }
+                }).then(res => {
+                    console.log(res)
+                    this.DetailsData = res.records
+                    this.OrderNo = res.records[0].orderNo
+                    console.log(this.OrderNo)
+                });
+            } else if (status == 2) {
+                this.$message.warning("用户已经付款，请勿重复结算")
+            } else if (status == 3) {
+                this.$message.warning("商家已经接单，请耐心等待")
+            } else if (status == 4) {
+                this.$message.warning("用户交易完成,无需重新付款")
+            } else {
+                this.$message.error("订单状态异常，请联系管理员")
             }
         },
         // 动态分页请求

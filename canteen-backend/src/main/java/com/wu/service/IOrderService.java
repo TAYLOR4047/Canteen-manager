@@ -23,4 +23,6 @@ public interface IOrderService extends IService<Order> {
     Boolean removesByOrderNo(List<String> ids);
 
     Boolean removeByOrderNo(String id);
+
+    Boolean updateConfirmStatusByOrderNo(String no);
 }

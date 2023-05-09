@@ -78,6 +78,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
+    public Boolean updateConfirmStatusByOrderNo(String no) {
+        return orderMapper.updateConfirmStatusByOrderNo(no);
+    }
+
+    @Override
     public Boolean removesByOrderNo(List<String> nos) {
         if (!nos.isEmpty()) {
             for (String no : nos) {

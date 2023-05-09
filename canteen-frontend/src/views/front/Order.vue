@@ -44,7 +44,7 @@
                             icon="el-icon-info"
                             icon-color="red"
                             title="您确定取消订单吗？"
-                            @confirm="Cancel(scope.row.id)"
+                            @confirm="Cancel(scope.row)"
                     >
                         <el-button type="warning" slot="reference">取消订单<i class="el-icon-remove-outline"></i>
                         </el-button>
@@ -80,7 +80,7 @@
 
         <el-dialog title="目前账单明细，请确认" :visible.sync="dialogFormVisible" width="80%">
             <el-table :data="DetailsData" border stripe :header-cell-class-name="'headerBg'"
-                      @selection-change="handleSelectionChange">
+            >
                 <el-table-column label="图片预览" width="80">
                     <template slot-scope="scope">
                         <el-popover placement="top-start" title="" trigger="hover">
@@ -89,9 +89,9 @@
                         </el-popover>
                     </template>
                 </el-table-column>
-<!--                <el-table-column prop="name" label="餐品名称"/>-->
+                <!--                <el-table-column prop="name" label="餐品名称"/>-->
                 <el-table-column prop="num" label="点餐数量" style="width: 200px"/>
-                <el-table-column prop="price" label="价格">
+                <el-table-column prop="price" label="单价">
                     <template slot-scope="scope">
                         <span>￥{{ scope.row.dishPrice }}</span>
                     </template>
@@ -102,12 +102,22 @@
                     </template>
                 </el-table-column>
             </el-table>
-<!--            <template slot-scope="scope">
-                <span>当前订单总价格：￥{{ scope.row.totalPrice }}</span>
-            </template>-->
             <div slot="footer" class="dialog-footer">
-                <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="ConfirmOrder">确 定</el-button>
+                <el-table :data="Data" border stripe :header-cell-class-name="'headerBg'">
+                    <el-table-column>
+                        <template slot-scope="scope">
+                            <span>当前订单总价格：￥{{ TotalPrice }}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column>
+                        <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    </el-table-column>
+                    <el-table-column>
+                        <template slot-scope="scope">
+                            <el-button type="primary" @click="ConfirmOrder()">确 定</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
             </div>
         </el-dialog>
     </div>
@@ -120,7 +130,8 @@ export default {
     data() {
         return {
             tableData: [],
-            DetailsData:[],
+            DetailsData: [],
+            Data: [1],
             total: 0,
             pageNum: 1,
             pageSize: 10,
@@ -128,7 +139,8 @@ export default {
             form: {},
             dialogFormVisible: false,
             multipleSelection: [],
-            TotalPrice:0,
+            TotalPrice: 0,
+            OrderNo: "",
             props: {
                 label: 'name',
             },
@@ -142,6 +154,19 @@ export default {
         this.load()
     },
     methods: {
+        ConfirmOrder() {
+            console.log(this.OrderNo)
+            this.request.post("/order/confirmOrder/" + this.OrderNo).then(res => {
+                if (res) {
+                    this.dialogFormVisible = false
+                    this.$message.success("订单支付成功")
+                    this.load()
+                } else {
+                    this.$message.error("订单支付失败,请重试")
+                    this.load()
+                }
+            })
+        },
         // 将数据库查询操作封装
         load() {
             this.request.get("/order/pageUser", {
@@ -154,17 +179,6 @@ export default {
                 this.tableData = res.records
                 this.total = res.total
             });
-        },
-        save() {
-            this.request.post("/order", this.form).then(res => {
-                if (res) {
-                    this.$message.success("保存成功")
-                    this.dialogFormVisible = false
-                    this.load()
-                } else {
-                    this.$message.error("保存失败")
-                }
-            })
         },
         handleAdd() {
             this.dialogFormVisible = true
@@ -186,7 +200,8 @@ export default {
                 }
             })
         },
-        Cancel(id) {
+        Cancel(row) {
+            let id = row.id;
             this.request.post("/order/" + id).then(res => {
                 if (res) {
                     this.$message.success("取消订单成功")
@@ -196,10 +211,9 @@ export default {
                     this.load()
                 }
             })
-        },
-        ConfirmOrder() {
 
         },
+
         handleSelectionChange(val) {
             console.log(val)
             this.multipleSelection = val
@@ -221,13 +235,15 @@ export default {
         },
         OrderChecks(row) {
             let status = row.orderStatus;
-            let No=row.orderNo;
+            this.TotalPrice = row.totalPrice;
+            console.log(this.TotalPrice)
+            let No = row.orderNo;
             if (status == 0) {
                 this.$message.warning("用户已经关闭订单，无法结算")
             } else if (status == 1) {
                 this.$message.warning("订单正在结账，请稍后")
                 this.dialogFormVisible = true
-                this.request.get("/order_item/pageUser/"+No, {
+                this.request.get("/order_item/pageUser/" + No, {
                     params: {
                         pageNum: this.pageNum,
                         pageSize: this.pageSize
@@ -235,7 +251,8 @@ export default {
                 }).then(res => {
                     console.log(res)
                     this.DetailsData = res.records
-                    //this.TotalPrice=row.totalPrice
+                    this.OrderNo = res.records[0].orderNo
+                    console.log(this.OrderNo)
                 });
             } else if (status == 2) {
                 this.$message.warning("用户已经付款，请勿重复结算")

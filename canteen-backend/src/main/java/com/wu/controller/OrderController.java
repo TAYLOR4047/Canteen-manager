@@ -68,6 +68,12 @@ public class OrderController {
         }
     }
 
+
+    @PostMapping("/confirmOrder/{No}")
+    public Boolean confirmOrder(@PathVariable String No){
+        return orderService.updateConfirmStatusByOrderNo(No);
+    }
+
     @PostMapping("/{id}")
     public Boolean cancel(@PathVariable Integer id) {
         return orderService.cancelOrderById(id);
