@@ -3,8 +3,8 @@
 <mapper namespace="com.wu.mapper.OrderItemMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO t_order_item (order_no,dishid,dish_img,dish_price,num,total_price)
-        VALUES (#{orderNo},#{dishid},#{dishImg},#{dishPrice},#{num},#{totalPrice})
+        INSERT INTO t_order_item (order_no,dishid,dishname,dish_img,dish_price,num,total_price)
+        VALUES (#{orderNo},#{dishid},#{dishname},#{dishImg},#{dishPrice},#{num},#{totalPrice})
     </insert>
 
     <select id="getOrderByOrderNo" resultType="com.wu.entity.OrderItem">

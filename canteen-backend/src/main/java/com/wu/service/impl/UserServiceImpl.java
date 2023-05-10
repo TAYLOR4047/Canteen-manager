@@ -70,6 +70,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         if(one==null){
             one=new User();
             BeanUtil.copyProperties(userDTO,one,true);
+            one.setRole("ROLE_GUEST");
             save(one);
         }else{
             throw new ServiceException(Constants.CODE_600,"用户已存在");

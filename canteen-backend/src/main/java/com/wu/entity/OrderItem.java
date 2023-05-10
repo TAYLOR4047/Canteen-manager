@@ -40,6 +40,9 @@ public class OrderItem implements Serializable {
     @ApiModelProperty("菜品id")
     private Integer dishid;
 
+    @ApiModelProperty("菜品名称")
+    private String dishname;
+
     @ApiModelProperty("菜品图片")
     private String dishImg;
 

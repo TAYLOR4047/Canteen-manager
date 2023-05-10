@@ -24,5 +24,5 @@ public interface IOrderService extends IService<Order> {
 
     Boolean removeByOrderNo(String id);
 
-    Boolean updateConfirmStatusByOrderNo(String no);
+    Boolean updateConfirmStatusByOrderNo(String no,Integer status);
 }

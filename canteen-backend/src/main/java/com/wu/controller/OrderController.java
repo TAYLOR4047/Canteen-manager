@@ -69,9 +69,9 @@ public class OrderController {
     }
 
 
-    @PostMapping("/confirmOrder/{No}")
-    public Boolean confirmOrder(@PathVariable String No){
-        return orderService.updateConfirmStatusByOrderNo(No);
+    @PostMapping("/confirmOrder/{No}/{status}")
+    public Boolean confirmOrder(@PathVariable String No,@PathVariable Integer status){
+        return orderService.updateConfirmStatusByOrderNo(No,status);
     }
 
     @PostMapping("/{id}")
@@ -107,9 +107,11 @@ public class OrderController {
         return orderService.getById(id);
     }
 
-    @GetMapping("/page")
-    public Page<Order> findPage(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+    @GetMapping("/pageBack")
+    public Page<Order> findPageBack(@RequestParam String orderNo,@RequestParam String uname,@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("order_no",orderNo);
+        queryWrapper.like("uname",uname);
         queryWrapper.orderByDesc("id");
         return orderService.page(new Page<>(pageNum, pageSize), queryWrapper);
     }
@@ -119,7 +121,7 @@ public class OrderController {
         String token = request.getHeader("token");
         String uid = JWT.decode(token).getAudience().get(0);
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByAsc("id");
+        queryWrapper.orderByDesc("create_time");
         queryWrapper.like("uid", uid);
         return orderService.page(new Page<>(pageNum, pageSize), queryWrapper);
     }

@@ -30,6 +30,7 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
 
                 orderItem.setOrderNo(orderId);
                 orderItem.setDishid(cid);
+                orderItem.setDishname(cart.getName());
                 orderItem.setDishImg(cart.getImage());
                 orderItem.setDishPrice(cart.getPrice());
                 orderItem.setNum(cart.getNum());
@@ -65,6 +66,28 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemMapper, OrderItem
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Boolean updateNumDownById(Integer id) {
+        Integer num=orderItemMapper.selectById(id).getNum();
+        int row=orderItemMapper.updateNumById(id,num-1);
+        if(row != 1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    @Override
+    public Boolean updateNumUpById(Integer id) {
+        Integer num=orderItemMapper.selectById(id).getNum();
+        int row=orderItemMapper.updateNumById(id,num+1);
+        if(row != 1){
+            return false;
+        }else{
+            return true;
+        }
     }
 
 

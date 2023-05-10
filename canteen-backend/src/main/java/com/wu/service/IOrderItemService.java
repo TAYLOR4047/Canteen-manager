@@ -19,4 +19,8 @@ public interface IOrderItemService extends IService<OrderItem> {
     Boolean removeItemByOrderNo(String id);
 
     Boolean removeItemsByOrderNo(List<String> ids);
+
+    Boolean updateNumDownById(Integer id);
+
+    Boolean updateNumUpById(Integer id);
 }

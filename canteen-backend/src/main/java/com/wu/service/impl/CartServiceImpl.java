@@ -81,7 +81,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
             // -- 从查询结果中取出原有数量，与参数amount相加，得到新的数量
             Integer num = nums + 1;
             // -- 调用updateNumByCid()执行修改数量
-            int row = cartMapper.updateNumByCid(cid, num,username);
+            int row = cartMapper.updateNumByCid(cid, num);
             if (row != 1) {
                 System.out.println("未执行更新操作");
             }

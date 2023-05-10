@@ -30,6 +30,11 @@
                             <span>{{ user.nickname }}</span><i class="el-icon-arrow-down" style="margin-left: 5px"></i>
                         </div>
                         <el-dropdown-menu slot="dropdown" style="width: 100px; text-align: center">
+                            <div v-if="user.role!='ROLE_GUEST'">
+                                <el-dropdown-item style="font-size: 14px; padding: 5px 0">
+                                    <router-link @click="$router.push('/login')">进入后台</router-link>
+                                </el-dropdown-item>
+                            </div>
                             <el-dropdown-item style="font-size: 14px; padding: 5px 0">
                                 <router-link to="/password" style="text-decoration: none">修改密码</router-link>
                             </el-dropdown-item>

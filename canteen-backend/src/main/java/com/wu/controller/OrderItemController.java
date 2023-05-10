@@ -39,6 +39,28 @@ public class OrderItemController {
     @Resource
     private IOrderItemService orderItemService;
 
+    @GetMapping("/pageDetails/{orderNo}")
+    public Page<OrderItem> findPageBack(@PathVariable String orderNo, @RequestParam Integer pageNum, @RequestParam Integer pageSize, HttpServletRequest request) {
+        QueryWrapper<OrderItem> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like("order_no", orderNo);
+        return orderItemService.page(new Page<>(pageNum, pageSize), queryWrapper);
+    }
+
+    @PostMapping("/num/drop/{id}")
+    public boolean dropNum(@PathVariable Integer id) {
+        return orderItemService.updateNumDownById(id);
+    }
+
+    @PostMapping("/num/add/{id}")
+    public boolean addNum(@PathVariable Integer id) {
+        return orderItemService.updateNumUpById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public Boolean delete(@PathVariable Integer id) {
+        return orderItemService.removeById(id);
+    }
+
     @GetMapping("/pageUser/{orderNo}")
     public Page<OrderItem> findPage(@PathVariable String orderNo, @RequestParam Integer pageNum, @RequestParam Integer pageSize, HttpServletRequest request) {
         String token = request.getHeader("token");

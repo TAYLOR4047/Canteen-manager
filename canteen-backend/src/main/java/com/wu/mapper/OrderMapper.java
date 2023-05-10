@@ -24,6 +24,6 @@ public interface OrderMapper extends BaseMapper<Order> {
     @Delete("delete from t_order where order_no=#{orderNo}")
     int deleteOrderByOrderNo(@Param("orderNo") String orderNo);
 
-    @Update("update t_order SET order_status=2 WHERE order_no=#{no}")
-    Boolean updateConfirmStatusByOrderNo(String no);
+    @Update("update t_order SET order_status=#{status} WHERE order_no=#{no}")
+    Boolean updateConfirmStatusByOrderNo(String no,Integer status);
 }

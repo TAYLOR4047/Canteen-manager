@@ -11,6 +11,7 @@ import com.wu.service.IDishService;
 import com.wu.service.IOrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.wu.service.IUserService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -78,8 +79,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public Boolean updateConfirmStatusByOrderNo(String no) {
-        return orderMapper.updateConfirmStatusByOrderNo(no);
+    public Boolean updateConfirmStatusByOrderNo(String no, Integer status) {
+        return orderMapper.updateConfirmStatusByOrderNo(no,status);
     }
 
     @Override

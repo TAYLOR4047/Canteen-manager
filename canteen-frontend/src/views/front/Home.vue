@@ -8,21 +8,6 @@
                 </el-carousel-item>
             </el-carousel>
         </div>
-
-        <div style="margin: 10px 0">
-            <el-row :gutter="10">
-                <el-col :span="6" v-for="item in dish" :key="item.id" style="margin-bottom: 10px">
-                    <div style="border: 1px solid #ccc; padding-bottom: 10px">
-                        <img :src="item.image" alt="" style="width: 100%">
-                        <div style="color: #666; padding: 10px">{{ item.title }}</div>
-                        <div style="padding: 10px">
-                            <el-tag> 价格:100</el-tag>
-                            <el-button type="primary">购买</el-button>
-                        </div>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
     </div>
 </template>
 
@@ -39,10 +24,11 @@ export default {
     data() {
         return {
             imgs: [
-                'https://img30.360buyimg.com/babel/s1580x830_jfs/t1/109361/24/22897/74054/621ede58E099d37e3/f12730c81df6046a.jpg!cc_1580x830.webp',
-                'https://img13.360buyimg.com/babel/s1580x830_jfs/t1/96398/30/23715/70228/6221e9d0Ec1b9fe65/f66e2ad76314d6cd.jpg!cc_1580x830.webp'
+                'https://media-cdn.tripadvisor.com/media/photo-s/12/ba/7d/4c/confit-cod-chorizo-red.jpg',
+                'https://media-cdn.tripadvisor.com/media/photo-s/16/f9/d1/05/brasserie-blanc-spring.jpg',
+                'https://media-cdn.tripadvisor.com/media/photo-f/12/ba/79/b7/hen-egg-watercress-jabugo.jpg'
             ],
-            files: []
+            dish: []
         }
     },
     ///echarts/file/front/all
@@ -51,10 +37,10 @@ export default {
     },
     methods: {
         load() {
-            this.request.get("/echarts/file/front/all").then(res => {
+/*            this.request.get("/dish/front/all").then(res => {
                 console.log(res.data)
-                this.files = res.data.filter(v => v.type === 'png' || v.type === 'jpg' || v.type === 'webp')
-            })
+                this.dish = res.data.filter(v => v.type === 'png' || v.type === 'jpg' || v.type === 'webp')
+            })*/
         }
     }
 }

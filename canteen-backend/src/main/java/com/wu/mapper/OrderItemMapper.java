@@ -5,6 +5,7 @@ import com.wu.entity.OrderItem;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 /**
  * <p>
@@ -21,4 +22,7 @@ public interface OrderItemMapper extends BaseMapper<OrderItem> {
 
     @Delete("delete from t_order_item WHERE order_no like #{orderNo}")
     int deleteOrderByOrderNo(@Param("orderNo")String orderNo);
+
+    @Update("update t_order_item set num=#{num} where id=#{id}")
+    int updateNumById(Integer id,Integer num);
 }

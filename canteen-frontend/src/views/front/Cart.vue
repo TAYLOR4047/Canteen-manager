@@ -5,7 +5,22 @@
         <div style="margin: 10px 0">
             <h2>购物车</h2>
         </div>
-
+        <div>
+            <div style="margin: 10px 0">
+                <el-popconfirm
+                    class="ml-5"
+                    confirm-button-text='确定'
+                    cancel-button-text='我再想想'
+                    icon="el-icon-info"
+                    icon-color="red"
+                    title="您确定批量删除这些数据吗？"
+                    @confirm="delBatch"
+                >
+                    <el-button type="danger" slot="reference">批量删除购物车记录 <i class="el-icon-remove-outline"></i>
+                    </el-button>
+                </el-popconfirm>
+            </div>
+        </div>
         <!--        表格内部操作部分        -->
         <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"
                   @selection-change="handleSelectionChange"
@@ -184,15 +199,34 @@ export default {
             this.sumPrice = 0;
             this.handleSum();
         },
+        delBatch(){
+            let ids = this.multipleSelection.map(v => v.cid)
+            this.request.post("/cart/del/batch", ids).then(res => {
+                if (res) {
+                    this.$message.success("批量删除购物车记录成功")
+                    this.load()
+                } else {
+                    this.$message.error("批量删除购物车记录失败")
+                }
+            })
+        },
         SendToOrder() {
-            console.log(this.multipleSelection.map(v => v.cid))
-            if (this.multipleSelection.map(v => v.cid).length > 0) {
+            let ids = this.multipleSelection.map(v => v.cid)
+            if (ids.length > 0) {
                 //先将其插入至订单明细中
-
-                this.request.post("/order/insert", this.multipleSelection.map(v => v.cid)).then(set => {
+                this.request.post("/order/insert",ids).then(set => {
                     if(set){
                         this.$message.success("订单添加成功")
                         this.$router.push("custom-order")
+                        //然后删除其在购物车内的记录
+                        this.request.post("/cart/del/batch", ids).then(res => {
+                            if (res) {
+                                //this.$message.success("批量删除购物车记录成功")
+                                this.load()
+                            } else {
+                                this.$message.error("批量删除购物车记录失败")
+                            }
+                        })
                     }else{
                         this.$message.error("订单添加失败")
                     }

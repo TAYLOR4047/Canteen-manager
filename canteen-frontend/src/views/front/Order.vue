@@ -32,10 +32,12 @@
                 </template>
             </el-table-column>
             <el-table-column prop="createTime" label="订单创建时间"></el-table-column>
-            <el-table-column prop="updateTime" label="订单更新时间">无</el-table-column>
-            <el-table-column label="操作" width="300" align="center">
+            <el-table-column prop="updateTime" label="订单更新时间"></el-table-column>
+            <el-table-column label="操作" width="400" align="center">
                 <template slot-scope="scope">
                     <el-button type="success" @click="OrderChecks(scope.row)">结算 <i class="el-icon-edit"></i>
+                    </el-button>
+                    <el-button type="info" @click="OrderDetails(scope.row)">订单明细 <i class="el-icon-edit"></i>
                     </el-button>
                     <el-popconfirm
                             class="ml-5"
@@ -89,8 +91,12 @@
                         </el-popover>
                     </template>
                 </el-table-column>
-                <!--                <el-table-column prop="name" label="餐品名称"/>-->
-                <el-table-column prop="num" label="点餐数量" style="width: 200px"/>
+                <el-table-column prop="dishname" label="餐品名称"/>
+                <el-table-column prop="num" label="点餐数量" style="width: 200px">
+                    <template slot-scope="scope">
+                        <span style="padding-left: 20px;padding-right: 20px">{{ scope.row.num }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column prop="price" label="单价">
                     <template slot-scope="scope">
                         <span>￥{{ scope.row.dishPrice }}</span>
@@ -114,7 +120,7 @@
                     </el-table-column>
                     <el-table-column>
                         <template slot-scope="scope">
-                            <el-button type="primary" @click="ConfirmOrder()">确 定</el-button>
+                            <el-button type="primary" @click="ConfirmOrder()">结 算</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -147,6 +153,7 @@ export default {
             expends: [],
             checks: [],
             showButton: '',
+            OrderStatus:0
         }
     },
     // 请求分页查询数据
@@ -156,7 +163,7 @@ export default {
     methods: {
         ConfirmOrder() {
             console.log(this.OrderNo)
-            this.request.post("/order/confirmOrder/" + this.OrderNo).then(res => {
+            this.request.post("/order/confirmOrder/" + this.OrderNo + "/" + 2).then(res => {
                 if (res) {
                     this.dialogFormVisible = false
                     this.$message.success("订单支付成功")
@@ -178,6 +185,35 @@ export default {
                 console.log(res)
                 this.tableData = res.records
                 this.total = res.total
+            });
+        },
+        Drop(id, num) {
+            if (num <= 1) {
+                this.$message.warning("餐品数量不得为0")
+                this.load()
+            } else {
+                this.request.post("/order_item/num/drop/" + id).then(res => {
+                    if (res) {
+                        this.$message.success("餐品减少成功")
+                        this.load()
+                    } else {
+                        this.$message.error("餐品减少失败")
+                        this.load()
+                    }
+                })
+            }
+            this.handleSum();
+        },
+        Add(id) {
+            this.request.post("/order_item/num/add/" + id).then(res => {
+                if (res) {
+                    this.$message.success("餐品增加成功")
+                    this.load()
+                } else {
+                    this.$message.error("餐品增加失败")
+                    this.load()
+                }
+                this.handleSum();
             });
         },
         handleAdd() {
@@ -202,15 +238,22 @@ export default {
         },
         Cancel(row) {
             let id = row.id;
-            this.request.post("/order/" + id).then(res => {
-                if (res) {
-                    this.$message.success("取消订单成功")
-                    this.load()
-                } else {
-                    this.$message.error("取消订单失败")
-                    this.load()
-                }
-            })
+            let status = row.orderStatus;
+            if (status == 0) {
+                this.$message.warning("已取消订单，请勿重复取消")
+            } else if (status == 4 || status == 3 || status == 2) {
+                this.$message.warning("商家已经接受交易，无法操作，请联系商家")
+            } else {
+                this.request.post("/order/" + id).then(res => {
+                    if (res) {
+                        this.$message.success("取消订单成功")
+                        this.load()
+                    } else {
+                        this.$message.error("取消订单失败")
+                        this.load()
+                    }
+                })
+            }
 
         },
 
@@ -232,6 +275,23 @@ export default {
         reset() {
             this.name = ""
             this.load()
+        },
+        OrderDetails(row) {
+            this.TotalPrice = row.totalPrice;
+            console.log(this.TotalPrice)
+            let No = row.orderNo;
+            this.dialogFormVisible = true
+            this.request.get("/order_item/pageDetails/" + No, {
+                params: {
+                    pageNum: this.pageNum,
+                    pageSize: this.pageSize
+                }
+            }).then(res => {
+                console.log(res)
+                this.DetailsData = res.records
+                this.OrderNo = res.records[0].orderNo
+                console.log(this.OrderNo)
+            });
         },
         OrderChecks(row) {
             let status = row.orderStatus;

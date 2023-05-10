@@ -8,7 +8,6 @@
             <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
             <el-button type="warning" @click="reset">重置</el-button>
         </div>
-
         <!--        表格内部操作部分        -->
         <el-table :data="tableData" border stripe :header-cell-class-name="'headerBg'"
                   @selection-change="handleSelectionChange">
@@ -97,7 +96,6 @@ export default {
                 console.log(res)
                 this.tableData = res.records
                 this.total = res.total
-
             });
         },
         updateDish() {

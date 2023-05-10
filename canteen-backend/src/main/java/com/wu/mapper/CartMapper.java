@@ -35,11 +35,10 @@ public interface CartMapper extends BaseMapper<Cart> {
     );
 
 
-    @Update("UPDATE t_cart SET num=#{num},modified_user=#{modifiedUser} WHERE cid=#{cid}")
+    @Update("UPDATE t_cart SET num=#{num} WHERE cid=#{cid}")
     int updateNumByCid(
             @Param("cid") Integer cid,
-            @Param("num") Integer num,
-            @Param("modified_user") String modifiedUser
+            @Param("num") Integer num
     );
     @Update("UPDATE t_cart SET num=#{num} WHERE cid=#{cid}")
     int updateNumByCidNoUser(
