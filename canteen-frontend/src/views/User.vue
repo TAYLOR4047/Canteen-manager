@@ -49,18 +49,52 @@
             <el-table-column prop="email" label="邮箱"></el-table-column>
             <el-table-column prop="phone" label="电话"></el-table-column>
             <el-table-column prop="address" label="地址"></el-table-column>
-            <el-table-column label="操作" width="200" align="center">
+            <el-table-column prop="status" label="账号状态">
+                <template slot-scope="scope">
+                    <el-tag
+                        :type="scope.row.status == 1 ? 'primary' : 'danger'"
+                        disable-transitions>{{scope.row.status == 1 ? '账号正常' : '账号冻结'}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column label="操作" width="350" align="center">
                 <template slot-scope="scope">
                     <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i>
                     </el-button>
                     <el-popconfirm
-                            class="ml-5"
-                            confirm-button-text='确定'
-                            cancel-button-text='我再想想'
-                            icon="el-icon-info"
-                            icon-color="red"
-                            title="您确定删除吗？"
-                            @confirm="del(scope.row.id)"
+                        class="ml-5"
+                        confirm-button-text='确定'
+                        cancel-button-text='我再想想'
+                        icon="el-icon-info"
+                        icon-color="red"
+                        title="您确定冻结该账号吗？"
+                        @confirm="shut(scope.row.id)"
+                        v-if="scope.row.status==1"
+                    >
+                        <el-button type="warning" slot="reference">冻结账号 <i class="el-icon-remove-outline"></i>
+                        </el-button>
+                    </el-popconfirm>
+                    <el-popconfirm
+                        class="ml-5"
+                        confirm-button-text='确定'
+                        cancel-button-text='我再想想'
+                        icon="el-icon-info"
+                        icon-color="red"
+                        title="您确定解冻该账号吗？"
+                        @confirm="recover(scope.row.id)"
+                        v-if="scope.row.status!=1"
+                    >
+                        <el-button type="warning" slot="reference">解冻账号 <i class="el-icon-remove-outline"></i>
+                        </el-button>
+                    </el-popconfirm>
+                    <el-popconfirm
+                        class="ml-5"
+                        confirm-button-text='确定'
+                        cancel-button-text='我再想想'
+                        icon="el-icon-info"
+                        icon-color="red"
+                        title="您确定删除吗？"
+                        @confirm="del(scope.row.id)"
                     >
                         <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i>
                         </el-button>
@@ -184,6 +218,26 @@ export default {
                     this.load()
                 } else {
                     this.$message.error("删除失败")
+                }
+            })
+        },
+        shut(id){
+            this.request.post("/user/shut/" + id).then(res => {
+                if (res) {
+                    this.$message.success("账号冻结成功")
+                    this.load()
+                } else {
+                    this.$message.error("账号冻结失败")
+                }
+            })
+        },
+        recover(id){
+            this.request.post("/user/recover/" + id).then(res => {
+                if (res) {
+                    this.$message.success("账号解冻成功")
+                    this.load()
+                } else {
+                    this.$message.error("账号解冻失败")
                 }
             })
         },

@@ -22,4 +22,7 @@ public interface IUserService extends IService<User> {
 
     void updatePassword(@Param("userPasswordDTO") UserPasswordDTO userPasswordDTO);
 
+    boolean ShutStatusById(Integer uid);
+
+    boolean RecoverStatusById(Integer uid);
 }

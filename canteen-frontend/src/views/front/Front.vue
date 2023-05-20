@@ -91,7 +91,7 @@ export default {
 }
 
 .item a {
-    color: #1E90FF;
+    color: #1ecbff;
 }
 
 .item:hover {

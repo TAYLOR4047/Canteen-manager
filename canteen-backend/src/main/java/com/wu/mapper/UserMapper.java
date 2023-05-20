@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.wu.controller.dto.UserPasswordDTO;
 import com.wu.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -22,5 +19,8 @@ import java.util.List;
 public interface UserMapper extends BaseMapper<User> {
     int updatePassword(@Param("userPasswordDTO") UserPasswordDTO userPasswordDTO);
 
-   /* Page<User> findPage(Page<User> page, @Param("username") String username, @Param("email") String email, @Param("address") String address);*/
+    @Update("update sys_user set status=#{Status} where id=#{uid}")
+    int updateStatus(Integer uid,Integer Status);
+
+    /* Page<User> findPage(Page<User> page, @Param("username") String username, @Param("email") String email, @Param("address") String address);*/
 }

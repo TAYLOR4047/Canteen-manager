@@ -15,4 +15,5 @@ public class UserDTO {
     private String token;
     private String role;
     private List<Menu> menus;
+    private Integer status;
 }

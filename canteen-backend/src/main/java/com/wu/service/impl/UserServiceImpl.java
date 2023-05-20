@@ -127,4 +127,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
     }
 
+    @Override
+    public boolean ShutStatusById(Integer uid) {
+        int row=userMapper.updateStatus(uid,0);
+        if(row!=1){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean RecoverStatusById(Integer uid) {
+        int row=userMapper.updateStatus(uid,1);
+        if(row!=1){
+            return false;
+        }else {
+            return true;
+        }
+    }
+
 }

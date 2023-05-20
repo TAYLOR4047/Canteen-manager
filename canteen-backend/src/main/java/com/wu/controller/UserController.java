@@ -60,6 +60,16 @@ public class UserController {
         return userService.removeByIds(ids);
     }
 
+    @PostMapping("/shut/{uid}")
+    public boolean shutdown(@PathVariable Integer uid){
+        return userService.ShutStatusById(uid);
+    }
+
+    @PostMapping("/recover/{uid}")
+    public boolean recover(@PathVariable Integer uid){
+        return userService.RecoverStatusById(uid);
+    }
+
     @GetMapping
     public List<User> findAll() {
         return userService.list();
@@ -163,8 +173,12 @@ public class UserController {
     public Result login(@RequestBody UserDTO userDTO) {
         String username = userDTO.getUsername();
         String password = userDTO.getPassword();
+        Integer status=userDTO.getStatus();
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)){
             return Result.error(Constants.CODE_400, "参数错误");
+        }
+        if(status!=1){
+            return Result.error(Constants.CODE_400,"该用户已被冻结");
         }
         UserDTO dto = userService.login(userDTO);
         return Result.success(dto);
@@ -174,6 +188,7 @@ public class UserController {
     public Result register(@RequestBody UserDTO userDTO) {
         String username = userDTO.getUsername();
         String password = userDTO.getPassword();
+        Integer status = 1;
         if (StrUtil.isBlank(username) || StrUtil.isBlank(password)){
             return Result.error(Constants.CODE_400, "参数错误");
         }
